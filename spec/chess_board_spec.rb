@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative '../lib/chess_board'
+
 describe ChessBoard do
   subject(:chess_board) { described_class.new }
 
@@ -23,21 +24,24 @@ describe ChessBoard do
   end
 
   context 'when a game starts' do
-    it 'has the proper piece configuration' do
-      board = chess_board.instance_variable_get(:@board)
+    it "top two ranks are white player's pieces" do
+      white_mixed_pieces = chess_board.instance_variable_get(:@board)[0]
 
-      initial_board_configuration = [
-        [Rook.new(:white), Knight.new(:white), Bishop.new(:white), Queen.new(:white), King.new(:white), Bishop.new(:white), Knight.new(:white), Rook.new(:white)],
-        [Pawn.new(:white), Pawn.new(:white), Pawn.new(:white), Pawn.new(:white), Pawn.new(:white), Pawn.new(:white), Pawn.new(:white), Pawn.new(:white)],
-        [' '] * 8,
-        [' '] * 8,
-        [' '] * 8,
-        [' '] * 8,
-        [Pawn.new(:black), Pawn.new(:black), Pawn.new(:black), Pawn.new(:black), Pawn.new(:black), Pawn.new(:black), Pawn.new(:black), Pawn.new(:black)],
-        [Rook.new(:black), Knight.new(:black), Bishop.new(:black), Queen.new(:black), King.new(:black), Bishop.new(:black), Knight.new(:black), Rook.new(:black)]
-      ]
+      white_pawn_pieces = chess_board.instance_variable_get(:@board)[1]
 
-      expect(board).to eq initial_board_configuration
+      expect(white_mixed_pieces).to all(have_attributes(color: :white))
+
+      expect(white_pawn_pieces).to all(have_attributes(color: :white))
+    end
+
+    it "bottom two ranks are black player's piece" do
+      black_mixed_pieces = chess_board.instance_variable_get(:@board)[7]
+
+      black_pawn_pieces = chess_board.instance_variable_get(:@board)[6]
+
+      expect(black_mixed_pieces).to all(have_attributes(color: :black))
+
+      expect(black_pawn_pieces).to all(have_attributes(color: :black))
     end
   end
 end
