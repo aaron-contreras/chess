@@ -41,7 +41,21 @@ describe ChessBoard do
 
       expect(black_mixed_pieces).to all(have_attributes(color: :black))
 
-      expect(black_pawn_pieces).to all(have_attributes(color: :black))
+      expect(black_pawn_pieces).to all(have_attributes(color: :black)) end end
+ 
+  describe '#move_piece' do
+    context 'when no opponent piece is on target' do
+      it 'moves the piece to target square' do
+        piece_square = [1, 0] 
+        target_square = [2, 0]
+
+        moved_piece = chess_board.instance_variable_get(:@board)[piece_square[0]][piece_square[1]]
+
+        chess_board.move_piece(piece_square, target_square)
+
+        expect(chess_board[piece_square[0]][piece_square[1]]).to eq ' '
+        expect(chess_board[target_square[0]][target_square[1]]).to eq moved_piece
+      end
     end
   end
 end
