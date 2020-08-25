@@ -37,14 +37,4 @@ class ChessBoard
 
     @board[target_square[0]][target_square[1]] = piece_to_move
   end
-
-  def capture_piece(piece_square, target_square)
-    piece_to_move = @board[piece_square[0]][piece_square[1]]
-
-    captured_piece = @board[target_square[0]][target_square[1]]
-
-    @board[target_square[0]][target_square[1]] = piece_to_move
-
-    captured_piece
-  end
 end
