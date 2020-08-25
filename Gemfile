@@ -11,4 +11,5 @@ gem 'rubocop', '~> 0.89.1'
 group :development do
   gem 'guard'
   gem 'guard-rspec', require: false
+  gem 'pry-byebug'
 end
