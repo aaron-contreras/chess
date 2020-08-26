@@ -2,43 +2,34 @@
 
 require_relative '../lib/chess_board'
 
-# rubocop: disable Metrics/BlockLength
 describe ChessBoard do
+  subject(:chess_board) { described_class.new } 
+
   describe '#move_piece' do
-    let(:piece_square) { [1, 0] }
-    let(:target_square) { [2, 0] }
+    let(:start_coordinates) { [1, 0] }
+    let(:end_coordinates) { [2, 0] }
+    let(:board) { chess_board.instance_variable_get(:@board) }
 
-    context 'when a target square is empty' do
-      let(:chess_board) { ChessBoard.new }
-      let(:board) { chess_board.instance_variable_get(:@board) }
-
-
+    context 'when the target square is empty' do
       it 'moves the piece to the target square' do
-        moved_piece = board[piece_square[0]][piece_square[1]]
+        moved_piece = board.dig(*start_coordinates)
 
-        chess_board.move_piece(piece_square, target_square)
+        chess_board.move_piece(start_coordinates, end_coordinates)
 
-        expect(board[target_square[0]][target_square[1]]).to eq(moved_piece)
+        expect(board.dig(*end_coordinates)).to eq moved_piece
       end
     end
 
+    context 'when the target square is not empty' do
+      it 'captures the piece at the target square' do
+        moved_piece = board.dig(*start_coordinates)
 
-    context "when the target square has an opponent's piece" do
-      let(:chess_board) { ChessBoard.new }
-      let(:board) { chess_board.instance_variable_get(:@board) }
+        board[end_coordinates[0]][end_coordinates[1]] = double('Dummy pawn')
 
-      it "captures the opponent's piece" do
-        require 'pry'
-        binding.pry
-        board[target_square[0]][target_square[1]] = double('Pawn')
+        chess_board.move_piece(start_coordinates, end_coordinates)
 
-        moved_piece = board[piece_square[0]][piece_square[1]]
-
-        chess_board.move_piece(piece_square, target_square)
-
-        expect(board[target_square[0]][target_square[1]]).to eq(moved_piece)
+        expect(board.dig(*end_coordinates)).to eq moved_piece
       end
     end
   end
 end
-# rubocop: enable Metrics/BlockLength
