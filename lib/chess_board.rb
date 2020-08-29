@@ -9,6 +9,8 @@ require_relative './pawn'
 
 # Represents a chess board
 class ChessBoard
+  attr_reader :board
+
   def initialize
     @board = initial_board_configuration
   end
@@ -29,10 +31,6 @@ class ChessBoard
     move_piece(king_coordinates, king_target)
     move_piece(rook_coordinates, rook_target)
   end
-
-  private
-
-  attr_reader :board
 
   def king_castle_target(king_coordinates, rook_coordinates)
     if rook_coordinates[1].zero?
