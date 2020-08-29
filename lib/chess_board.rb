@@ -30,6 +30,20 @@ class ChessBoard
     move_piece(rook_coordinates, rook_target)
   end
 
+  # To-do: Could be refactored to use three arguments
+  # Capturing coords, captured coords, end coords
+  def en_passant(capturing_pawn_coordinates, end_coordinates)
+    capturing_pawn = board.dig(*capturing_pawn_coordinates)
+
+    move_piece(capturing_pawn_coordinates, end_coordinates)
+
+    if capturing_pawn.color == :black
+      board[end_coordinates[0] - 1][end_coordinates[1]] = ' '
+    else
+      board[end_coordinates[0] + 1][end_coordinates[1]] = ' '
+    end
+  end
+
   private
 
   attr_reader :board
