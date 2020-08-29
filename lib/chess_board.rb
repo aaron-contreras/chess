@@ -30,6 +30,22 @@ class ChessBoard
     move_piece(rook_coordinates, rook_target)
   end
 
+  # TODO: only works for black's side
+  def en_passant(capturing_pawn_coordinates, end_coordinates)
+    # Gets capturing pawn
+    capturing_pawn = board.dig(*capturing_pawn_coordinates)
+
+    # Moves the piece
+    move_piece(capturing_pawn_coordinates, end_coordinates)
+
+    # Captures
+    if capturing_pawn.color == :black
+      board[end_coordinates[0] - 1][end_coordinates[1]] = ' '
+    else
+      board[end_coordinates[0] + 1][end_coordinates[1]] = ' '
+    end
+  end
+
   private
 
   attr_reader :board
