@@ -135,6 +135,19 @@ describe MoveGenerator do
             expect(valid_moves).to contain_exactly([2, 0], [3, 0])
           end
         end
+
+        context 'black pawn' do
+          let(:pawn_movement_directions) { [[-1, 0], [-2, 0]] }
+          it 'returns two valid moves' do
+            allow(board_layout[6][3]).to receive(:movement_directions).and_return(pawn_movement_directions)
+
+            allow(board_layout[6][3]).to receive(:repeatedly_jumps?).and_return(false)
+
+            valid_moves = generator.generate_moves([6, 3])
+
+            expect(valid_moves).to contain_exactly([5, 3], [4, 3])
+          end
+        end
       end
 
       # SPECIAL CASES
