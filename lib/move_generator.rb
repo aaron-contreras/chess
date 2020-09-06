@@ -31,7 +31,7 @@ class MoveGenerator
       first_invalid = movements_by_direction.find_index do |move|
         square_contents = chess_board.board.dig(*move)
 
-        (square_contents != ' ' && square_contents.color == piece.color)
+        square_contents != ' '
       end
 
       # Here
@@ -40,7 +40,7 @@ class MoveGenerator
     end.reject(&:empty?)
 
     if piece.repeatedly_jumps?
-      final_moves
+      final_moves.flatten(1)
     else
       final_moves.map do |direction|
         direction[0]

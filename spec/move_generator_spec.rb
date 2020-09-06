@@ -3,7 +3,7 @@
 require_relative '../lib/move_generator'
 
 # rubocop: disable Metrics/BlockLength
-
+# rubocop: disable Metrics/LineLength
 describe MoveGenerator do
   # Has a ChessBoard object as a dependency
 
@@ -13,6 +13,8 @@ describe MoveGenerator do
 
   # Test pieces without special cases for capturing first
   describe 'generate_move' do
+    let(:rook_movement_directions) { [[-1, 0], [0, 1], [1, 0], [0, -1]] }
+
     context 'on initial board configuration' do
       let(:board_layout) do
         [
@@ -48,8 +50,6 @@ describe MoveGenerator do
       end
 
       context 'when given a rook' do
-        let(:rook_movement_directions) { [[-1, 0], [0, 1], [1, 0], [0, -1]] }
-
         it 'returns no valid moves' do
           allow(board_layout[0][0]).to receive(:movement_directions).and_return(rook_movement_directions)
           allow(board_layout[0][0]).to receive(:repeatedly_jumps?).and_return(true)
@@ -165,33 +165,47 @@ describe MoveGenerator do
         end
       end
     end
-  end
 
-  context 'on a developing game' do
-    context 'when a rook can move in all directions' do
-      let(:board_layout) do
-        [
+    context 'on a developing game' do
+      context 'when given a movable rook' do
+        let(:board_layout) do
           [
-            double('White Rook Left'), double('White Knight Left'), double('White Bishop Left'),
-            double('White Queen'), double('White King'),
-            double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
-          ],
-          8.times.map { double('White Pawn') },
+            [
+              double('White Rook Left'), ' ', double('White Bishop Left'),
+              double('White Queen'), double('White King'),
+              double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+            ],
+            [' ', double('White Pawn'), double('White Pawn'), double('White Pawn'), double('White Pawn'), double('White Pawn'), double('White Pawn')],
 
-          8.times.map { ' ' },
-          8.times.map { ' ' },
-          8.times.map { ' ' },
-          8.times.map { ' ' },
+            8.times.map { ' ' },
+            8.times.map { ' ' },
+            8.times.map { ' ' },
+            8.times.map { ' ' },
 
-          8.times.map { double('Black Pawn') },
-          [
-            double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
-            double('Black Queen'), double('Black King'),
-            double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+            8.times.map { double('Black Pawn') },
+            [
+              double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+              double('Black Queen'), double('Black King'),
+              double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+            ]
           ]
-        ]
+        end
+
+        it 'returns all valid moves' do
+          allow(board_layout[0][0]).to receive(:movement_directions).and_return(rook_movement_directions)
+          allow(board_layout[0][0]).to receive(:repeatedly_jumps?).and_return(true)
+          allow(board_layout[0][0]).to receive(:color).and_return(:white)
+          allow(board_layout[0][2]).to receive(:color).and_return(:white)
+          allow(board_layout[6][0]).to receive(:color).and_return(:black)
+          allow(board_layout[7][0]).to receive(:color).and_return(:black)
+
+          valid_moves = generator.generate_moves([0, 0])
+
+          expect(valid_moves).to contain_exactly([0, 1], [1, 0], [2, 0], [3, 0], [4, 0], [5, 0])
+        end
       end
     end
   end
 end
 # rubocop: enable Metrics/BlockLength
+# rubocop: enable Metrics/LineLength
