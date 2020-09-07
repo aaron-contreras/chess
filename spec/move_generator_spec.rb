@@ -17,6 +17,7 @@ describe MoveGenerator do
     let(:knight_movement_directions) { [[-1, -2], [-2, -1], [-2, 1], [-1, 2], [1, 2], [2, 1], [1, -2], [2, -1]] }
     let(:bishop_movement_directions) { [[-1, -1], [-1, 1], [1, 1], [1, -1]] }
     let(:queen_movement_directions) { [[-1, 0], [0, 1], [1, 0], [0, -1], [-1, -1], [-1, 1], [1, 1], [1, -1]] }
+    let(:king_movement_directions) { [[-1, -1], [-1, 0], [-1, -1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]] }
 
     context 'on initial board configuration' do
       let(:board_layout) do
@@ -84,18 +85,6 @@ describe MoveGenerator do
       end
 
       context 'when given a king' do
-        let(:king_movement_directions) do
-          [
-            [-1, -1],
-            [-1, 0],
-            [-1, -1],
-            [0, 1],
-            [1, 1],
-            [1, 0],
-            [1, -1],
-            [0, -1]
-          ]
-        end
 
         it 'returns no valid moves' do
           allow(board_layout[0][4]).to receive(:movement_directions).and_return(king_movement_directions)
@@ -142,7 +131,6 @@ describe MoveGenerator do
       end
 
       context 'when given a queen' do
-
         it 'returns no valid moves' do
           allow(board_layout[0][3]).to receive(:movement_directions).and_return(queen_movement_directions)
           allow(board_layout[0][3]).to receive(:repeatedly_jumps?).and_return(true)
@@ -288,6 +276,112 @@ describe MoveGenerator do
           valid_moves = generator.generate_moves([3, 1])
 
           expect(valid_moves).to contain_exactly([2, 1], [2, 2], [3, 2], [3, 3], [3, 4], [3, 5], [3, 6], [3, 7], [4, 2], [5, 3], [4, 1], [5, 1], [6, 1], [4, 0], [3, 0], [2, 0])
+        end
+      end
+
+      context 'when given a movable king' do
+        let(:board_layout) do
+          [
+            [
+              double('White Rook Left'), ' ', ' ',
+              ' ', double('White King'),
+              double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+            ],
+            [' ', double('White Pawn'), double('White Pawn'), double('White Pawn'), ' ', ' ', double('White Pawn')],
+
+            8.times.map { ' ' },
+            [' ', double('White Queen'), ' ', ' ', ' ', ' ', ' ', ' '],
+            8.times.map { ' ' },
+            8.times.map { ' ' },
+
+            [double('Black Pawn'), ' ', double('Black Pawn'), double('Black Pawn'), double('Black Pawn'), double('Black Pawn'), double('Black Pawn')],
+            [
+              double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+              double('Black Queen'), double('Black King'),
+              double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+            ]
+          ]
+        end
+
+        it 'generates all valid moves' do
+          allow(board_layout[0][4]).to receive(:movement_directions).and_return(king_movement_directions)
+          allow(board_layout[0][4]).to receive(:repeatedly_jumps?).and_return(false)
+
+          valid_moves = generator.generate_moves([0, 4])
+
+          expect(valid_moves).to contain_exactly([0, 3], [1, 4], [1, 5])
+        end
+      end
+      
+      context 'when given a movable white pawn' do
+        let(:board_layout) do
+          [
+            [
+              double('White Rook Left'), ' ', ' ',
+              ' ', double('White King'),
+              double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+            ],
+            [' ', double('White Pawn'), double('White Pawn'), double('White Pawn'), ' ', ' ', double('White Pawn')],
+
+            8.times.map { ' ' },
+            [double('White Pawn'), double('White Queen'), ' ', ' ', ' ', ' ', ' ', ' '],
+            8.times.map { ' ' },
+            8.times.map { ' ' },
+
+            [double('Black Pawn'), ' ', double('Black Pawn'), double('Black Pawn'), double('Black Pawn'), double('Black Pawn'), double('Black Pawn')],
+            [
+              double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+              double('Black Queen'), double('Black King'),
+              double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+            ]
+          ]
+        end
+
+        let(:pawn_movement_directions) { [[1, 0]] }
+
+        it 'returns all valid moves' do
+          allow(board_layout[3][0]).to receive(:movement_directions).and_return(pawn_movement_directions)
+          allow(board_layout[3][0]).to receive(:repeatedly_jumps?).and_return(false)
+
+          valid_moves = generator.generate_moves([3, 0])
+
+          expect(valid_moves).to contain_exactly([4, 0])
+        end
+      end
+
+      context 'when given a movable black pawn' do
+        let(:board_layout) do
+          [
+            [
+              double('White Rook Left'), ' ', ' ',
+              ' ', double('White King'),
+              double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+            ],
+            [' ', double('White Pawn'), double('White Pawn'), double('White Pawn'), ' ', ' ', double('White Pawn')],
+
+            8.times.map { ' ' },
+            [double('White Pawn'), double('White Queen'), ' ', ' ', ' ', ' ', ' ', ' '],
+            8.times.map { ' ' },
+            [double('Black Pawn'), ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+
+            [' ', ' ', double('Black Pawn'), double('Black Pawn'), double('Black Pawn'), double('Black Pawn'), double('Black Pawn')],
+            [
+              double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+              double('Black Queen'), double('Black King'),
+              double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+            ]
+          ]
+        end
+
+        let(:pawn_movement_directions) { [[-1, 0]] }
+
+        it 'returns all valid moves' do
+          allow(board_layout[5][0]).to receive(:movement_directions).and_return(pawn_movement_directions)
+          allow(board_layout[5][0]).to receive(:repeatedly_jumps?).and_return(false)
+
+          valid_moves = generator.generate_moves([5, 0])
+
+          expect(valid_moves).to contain_exactly([4, 0])
         end
       end
     end
