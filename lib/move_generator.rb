@@ -48,6 +48,20 @@ class MoveGenerator
     end
   end
 
+  def generate_captures(piece_coordinates)
+    piece = chess_board.board.dig(*piece_coordinates)
+
+    capture_squares = piece.capture_directions.map do |y_travel, x_travel|
+      [piece_coordinates[0] + y_travel, piece_coordinates[1] + x_travel]
+    end
+
+    capture_squares.select do |coords|
+      square = chess_board.board.dig(*coords)
+
+      square != ' ' && square.color != piece.color
+    end
+  end
+
   private
 
   attr_reader :chess_board

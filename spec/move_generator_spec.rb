@@ -386,6 +386,84 @@ describe MoveGenerator do
       end
     end
   end
+
+  context '#generate_captures' do
+    context "when given a white pawn that can't capture" do
+      let(:board_layout) do
+        [
+          [
+            double('White Rook Left'), double('White Knight Left'), double('White Bishop Left'),
+            double('White Queen'), double('White King'),
+            double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+          ],
+          8.times.map { double('White Pawn') },
+
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+
+          8.times.map { double('Black Pawn') },
+          [
+            double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+            double('Black Queen'), double('Black King'),
+            double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+          ]
+        ]
+      end
+
+      let(:pawn_capture_directions) { [[1, -1], [1, 1]] }
+
+      # CREATE A CLASS FOR EVERY PIECE CAPTURE STYLE
+      # PAWN NEEDS EN_PASSANT
+      # ETC
+
+      it 'returns an empty array' do
+        allow(board_layout[1][3]).to receive(:capture_directions).and_return(pawn_capture_directions)
+        allow(board_layout[1][3]).to receive(:repeatedly_jumps?).and_return(false)
+
+        captures = generator.generate_captures([1, 3])
+
+        expect(captures).to be_empty
+      end
+    end
+
+    context 'when given a pawn that can capture' do
+      let(:board_layout) do
+        [
+          [
+            double('White Rook Left'), double('White Knight Left'), double('White Bishop Left'),
+            double('White Queen'), double('White King'),
+            double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+          ],
+          8.times.map { double('White Pawn') },
+
+          [double('Black Pawn'), ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+
+          8.times.map { double('Black Pawn') },
+          [
+            double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+            double('Black Queen'), double('Black King'),
+            double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+          ]
+        ]
+      end
+
+      let(:pawn_capture_directions) { [[1, -1], [1, 1]] }
+      it 'returns the capture coordinates' do
+        allow(board_layout[1][1]).to receive(:capture_directions).and_return(pawn_capture_directions)
+        allow(board_layout[1][1]).to receive(:color).and_return(:white)
+        allow(board_layout[2][0]).to receive(:color).and_return(:black)
+
+        captures = generator.generate_captures([1, 1])
+
+        expect(captures).to contain_exactly([2, 0])
+      end
+    end
+  end
 end
 # rubocop: enable Metrics/BlockLength
 # rubocop: enable Metrics/LineLength
