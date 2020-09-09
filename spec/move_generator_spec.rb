@@ -388,7 +388,7 @@ describe MoveGenerator do
   end
 
   context '#generate_captures' do
-    context "when given a white pawn that can't capture" do
+    context "when given piece that can't capture" do
       let(:board_layout) do
         [
           [
@@ -453,6 +453,7 @@ describe MoveGenerator do
       end
 
       let(:pawn_capture_directions) { [[1, -1], [1, 1]] }
+
       it 'returns the capture coordinates' do
         allow(board_layout[1][1]).to receive(:capture_directions).and_return(pawn_capture_directions)
         allow(board_layout[1][1]).to receive(:color).and_return(:white)
@@ -463,6 +464,46 @@ describe MoveGenerator do
         expect(captures).to contain_exactly([2, 0])
       end
     end
+
+    context 'when given a knight that can capture' do
+      let(:board_layout) do
+        [
+          [
+            double('White Rook Left'), double('White Knight Left'), double('White Bishop Left'),
+            double('White Queen'), double('White King'),
+            double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+          ],
+          8.times.map { double('White Pawn') },
+
+          [double('Black Pawn'), ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+
+          8.times.map { double('Black Pawn') },
+          [
+            double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+            double('Black Queen'), double('Black King'),
+            double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+          ]
+        ]
+      end
+
+      let(:knight_capture_directions) { [[-1, -2], [-2, -1], [-2, 1], [-1, 2], [1, 2], [2, 1], [1, -2], [2, -1]] }
+
+      it 'returns the pieces it can capture' do
+        allow(board_layout[0][1]).to receive(:capture_directions).and_return(knight_capture_directions)
+        allow(board_layout[0][1]).to receive(:color).and_return(:white)
+        allow(board_layout[1][3]).to receive(:color).and_return(:white)
+        allow(board_layout[2][0]).to receive(:color).and_return(:black)
+
+        captures = generator.generate_captures([0, 1])
+
+        expect(captures).to contain_exactly([2, 0])
+      end
+    end
+
+    # CONTINUE WRITING TESTS BUT TAKING A DIFFERENT APPROACH NOW. GOING OVER TO CODE THE LOGIC FOR EACH PIECE TO KNOW HOW TO MOVE
   end
 end
 # rubocop: enable Metrics/BlockLength
