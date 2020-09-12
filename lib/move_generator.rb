@@ -54,7 +54,27 @@ class MoveGenerator
     capture_squares = piece.capture_directions.map do |y_travel, x_travel|
       [piece_coordinates[0] + y_travel, piece_coordinates[1] + x_travel]
     end.select { |square| square[0].between?(0, 8) && square[1].between?(0, 8) }
-    require 'pry'
+
+    if piece.repeatedly_jumps?
+      capture_squares = []
+      piece.capture_directions.each do |y_travel, x_travel|
+        jumps = 1
+        loop do
+          square_coords = [piece_coordinates[0] + jumps * y_travel, piece_coordinates[1] + jumps * x_travel]
+
+          square_contents = chess_board.board.dig(*square_coords)
+
+          break unless valid_square?(square_coords)
+
+          if square_contents != ' '
+            capture_squares << square_coords
+            break
+          end
+
+          jumps += 1
+        end
+      end
+    end
 
     capture_squares.select do |coords|
       square = chess_board.board.dig(*coords)

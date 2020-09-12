@@ -456,6 +456,7 @@ describe MoveGenerator do
 
       it 'returns the capture coordinates' do
         allow(board_layout[1][1]).to receive(:capture_directions).and_return(pawn_capture_directions)
+        allow(board_layout[1][1]).to receive(:repeatedly_jumps?).and_return(false)
         allow(board_layout[1][1]).to receive(:color).and_return(:white)
         allow(board_layout[2][0]).to receive(:color).and_return(:black)
 
@@ -493,6 +494,7 @@ describe MoveGenerator do
 
       it 'returns the pieces it can capture' do
         allow(board_layout[0][1]).to receive(:capture_directions).and_return(knight_capture_directions)
+        allow(board_layout[0][1]).to receive(:repeatedly_jumps?).and_return(false)
         allow(board_layout[0][1]).to receive(:color).and_return(:white)
         allow(board_layout[1][3]).to receive(:color).and_return(:white)
         allow(board_layout[2][0]).to receive(:color).and_return(:black)
@@ -500,6 +502,46 @@ describe MoveGenerator do
         captures = generator.generate_captures([0, 1])
 
         expect(captures).to contain_exactly([2, 0])
+      end
+    end
+
+    context 'when given a bishop that can capture' do
+      let(:board_layout) do
+        [
+          [
+            double('White Rook Left'), double('White Knight Left'), ' ',
+            double('White Queen'), double('White King'),
+            double('White Bishop Right'), double('White Knight Right'), double('White Rook Right')
+          ],
+          8.times.map { double('White Pawn') },
+
+          [double('Black Pawn'), ' ', double('White Bishop Left'), ' ', ' ', ' ', ' ', ' '],
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+          8.times.map { ' ' },
+
+          8.times.map { double('Black Pawn') },
+          [
+            double('Black Rook Left'), double('Black Knight Left'), double('Black Bishop Left'),
+            double('Black Queen'), double('Black King'),
+            double('Black Bishop Right'), double('Black Knight Right'), double('Black Rook Right')
+          ]
+        ]
+      end
+
+      let(:bishop_capture_directions) { [[-1, -1], [-1, 1], [1, 1], [1, -1]] }
+
+      it 'returns the pieces it can capture' do
+        allow(board_layout[2][2]).to receive(:capture_directions).and_return(bishop_capture_directions)
+        allow(board_layout[2][2]).to receive(:repeatedly_jumps?).and_return(true)
+        allow(board_layout[2][2]).to receive(:color).and_return(:white)
+        allow(board_layout[6][6]).to receive(:color).and_return(:black)
+        allow(board_layout[1][1]).to receive(:color).and_return(:white)
+        allow(board_layout[1][3]).to receive(:color).and_return(:white)
+
+        captures = generator.generate_captures([2, 2])
+
+        expect(captures).to contain_exactly([6, 6])
       end
     end
 
