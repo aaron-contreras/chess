@@ -1,3 +1,6 @@
 # frozen_string_literal: true
 
-module ChessPieces; end
+module ChessPieces
+  class Rook
+  end
+end
