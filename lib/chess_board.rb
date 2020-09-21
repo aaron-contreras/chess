@@ -37,6 +37,7 @@ class ChessBoard
 
     move_piece(capturing_pawn_coordinates, end_coordinates)
 
+    # Captures
     if capturing_pawn.color == :black
       board[end_coordinates[0] - 1][end_coordinates[1]] = ' '
     else
