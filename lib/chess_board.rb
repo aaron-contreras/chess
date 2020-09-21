@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
-require_relative './rook'
-require_relative './knight'
-require_relative './bishop'
-require_relative './queen'
-require_relative './king'
-require_relative './pawn'
+require_relative 'chess_pieces'
 
 # Represents a chess board
 class ChessBoard
+  include ChessPieces
+
   def initialize
     @board = initial_board_configuration
   end

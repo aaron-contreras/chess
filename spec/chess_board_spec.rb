@@ -4,7 +4,7 @@ require_relative '../lib/chess_board'
 
 # rubocop: disable Metrics/BlockLength
 describe ChessBoard do
-  subject(:chess_board) { described_class.new } 
+  subject(:chess_board) { described_class.new }
 
   describe '#move_piece' do
     let(:start_coordinates) { [1, 0] }
