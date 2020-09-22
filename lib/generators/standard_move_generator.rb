@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-# Generates moves for standard moving pieces (Rooks and Bishops)
+# Generates all moves for standard moving pieces (Rooks and Bishops) based on
+# the directions in which they move.
+# They are stopped from further jumping by friendly pieces and a first capture
+# encounter.
 class StandardMoveGenerator
   def initialize(piece, other_pieces, jump_directions)
     @piece = piece
@@ -13,6 +16,10 @@ class StandardMoveGenerator
       movable_locations(direction)
     end.reject(&:empty?).flatten(1)
   end
+
+  private
+
+  attr_reader :piece, :other_pieces, :jump_directions
 
   def movable_locations(direction, has_not_captured = true)
     locations_in_direction = []
@@ -29,10 +36,6 @@ class StandardMoveGenerator
 
     locations_in_direction
   end
-
-  private
-
-  attr_reader :piece, :other_pieces, :jump_directions
 
   def next_jump(position, direction)
     [position[0] + direction[0], position[1] + direction[1]]
