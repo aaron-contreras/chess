@@ -1,15 +1,13 @@
 # frozen_string_literal: true
 
+require_relative 'chess_piece'
 require_relative '../generators/standard_move_generator'
 
 # A regular-moving piece.
 # Jumps repeatedly accross the board in a perpendicular direction.
-class Rook
-  attr_reader :player, :position
-
+class Rook < ChessPiece
   def initialize(player, position)
-    @player = player
-    @position = position
+    super(player, position)
   end
 
   def moves(other_pieces)
