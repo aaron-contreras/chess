@@ -2,6 +2,8 @@
 
 require_relative '../../lib/chess_pieces/queen'
 
+# rubocop: disable all
+
 RSpec.describe Queen do
   let(:pieces) do
     [
@@ -47,7 +49,7 @@ RSpec.describe Queen do
       subject(:queen) { described_class.new(:white, [0, 3]) }
 
       it 'returns an empty array' do
-        other_pieces = pieces.reject.with_index { |_piece, index| index == 3}
+        other_pieces = pieces.reject.with_index { |_piece, index| index == 3 }
 
         list_of_moves = queen.moves(other_pieces)
 
@@ -60,10 +62,10 @@ RSpec.describe Queen do
 
       it 'returns all valid moves/captures' do
         # Exclude queen and the two pawns blocking its path
-        other_pieces = pieces.reject.with_index { |_piece, index| index == 18 || index == 20 || index == 27}
+        other_pieces = pieces.reject.with_index { |_piece, index| [18, 20, 27].include?(index) }
 
         list_of_moves = queen.moves(other_pieces)
-        
+
         expect(list_of_moves).to contain_exactly([6, 2], [5, 1], [4, 0], [6, 4], [5, 5], [4, 6], [3, 7])
       end
     end
@@ -107,3 +109,4 @@ RSpec.describe Queen do
     end
   end
 end
+# rubocop: disable all
