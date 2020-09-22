@@ -8,12 +8,20 @@ class Generator
     @jump_directions = jump_directions
   end
 
+  def generate_moves
+    raise 'Implement how moves are generated'
+  end
+
   private
 
   attr_reader :piece, :other_pieces, :jump_directions
 
   def valid_position?(position)
     inbound?(position) && (no_piece_at?(position) || other_player_is_at?(position))
+  end
+
+  def next_jump(position, direction)
+    [position[0] + direction[0], position[1] + direction[1]]
   end
 
   def inbound?(position)
