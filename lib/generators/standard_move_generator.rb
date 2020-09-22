@@ -14,6 +14,10 @@ class StandardMoveGenerator
     end.reject(&:empty?).flatten(1)
   end
 
+  private
+
+  attr_reader :piece, :other_pieces, :jump_directions
+
   def movable_locations(direction, has_not_captured = true)
     locations_in_direction = []
     hypothetical_position = next_jump(piece.position, direction)
@@ -29,10 +33,6 @@ class StandardMoveGenerator
 
     locations_in_direction
   end
-
-  private
-
-  attr_reader :piece, :other_pieces, :jump_directions
 
   def next_jump(position, direction)
     [position[0] + direction[0], position[1] + direction[1]]

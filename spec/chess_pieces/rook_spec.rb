@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative '../lib/chess_pieces'
+require_relative '../../lib/chess_pieces/rook'
 
 # rubocop: disable all
 
-RSpec.describe ChessPieces::Rook do
+RSpec.describe Rook do
   let(:pieces) do
     [
       double('White Left Rook', player: :white, position: [0, 0]),
@@ -49,7 +49,7 @@ RSpec.describe ChessPieces::Rook do
       subject(:rook) { described_class.new(:white, [0, 0]) }
 
       it 'returns an empty array' do
-        other_pieces = pieces.reject.with_index { |piece, index| index.zero? }
+        other_pieces = pieces.reject.with_index { |_piece, index| index.zero? }
 
         list_of_moves = rook.moves(other_pieces)
 
@@ -62,7 +62,7 @@ RSpec.describe ChessPieces::Rook do
 
       it 'returns an array with all valid moves/captures' do
         # Ignore rook from piece list
-        other_pieces = pieces.reject.with_index { |piece, index| index.zero? }
+        other_pieces = pieces.reject.with_index { |_piece, index| index.zero? }
 
         list_of_moves = rook.moves(other_pieces)
 
@@ -77,7 +77,7 @@ RSpec.describe ChessPieces::Rook do
         allow(pieces[14]).to receive(:position).and_return([4, 5])
 
         # Ignore rook from piece list
-        other_pieces = pieces.reject.with_index { |piece, index| index == 25 }
+        other_pieces = pieces.reject.with_index { |_piece, index| index == 25 }
 
         list_of_moves = rook.moves(other_pieces)
 
