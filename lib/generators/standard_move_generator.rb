@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-# Generates moves for standard moving pieces (Rooks and Bishops)
+# Generates all moves for standard moving pieces (Rooks and Bishops) based on
+# the directions in which they move.
+# They are stopped from further jumping by friendly pieces and a first capture
+# encounter.
 class StandardMoveGenerator
   def initialize(piece, other_pieces, jump_directions)
     @piece = piece
