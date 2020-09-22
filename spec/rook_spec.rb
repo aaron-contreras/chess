@@ -5,7 +5,6 @@ require_relative '../lib/chess_pieces'
 # rubocop: disable all
 
 RSpec.describe ChessPieces::Rook do
-
   let(:pieces) do
     [
       double('White Left Rook', player: :white, position: [0, 0]),
@@ -58,17 +57,32 @@ RSpec.describe ChessPieces::Rook do
       end
     end
 
-    context 'when in a position to move' do
+    context 'when in a position to in 2 directions' do
       subject(:rook) { described_class.new(:white, [2, 0]) }
 
-      it 'returns an array with valid moves/captures' do
+      it 'returns an array with all valid moves/captures' do
+        # Ignore rook from piece list
         other_pieces = pieces.reject.with_index { |piece, index| index.zero? }
 
         list_of_moves = rook.moves(other_pieces)
 
         expect(list_of_moves).to contain_exactly([2, 1], [2, 2], [2, 3], [2, 4], [2, 5], [2, 6], [2, 7], [3, 0], [4, 0], [5, 0], [6, 0])
       end 
-      
+    end
+
+    context 'when in a position to move in all directions' do
+      subject(:rook) { described_class.new(:black, [4, 1]) }
+
+      it 'returns an array with all valid moves/captures' do
+        allow(pieces[14]).to receive(:position).and_return([4, 5])
+
+        # Ignore rook from piece list
+        other_pieces = pieces.reject.with_index { |piece, index| index == 25 }
+
+        list_of_moves = rook.moves(other_pieces)
+
+        expect(list_of_moves).to contain_exactly([3, 1], [2, 1], [1, 1], [4, 2], [4, 3], [4, 4], [4, 5], [5, 1], [4, 0])
+      end
     end
   end
 end
