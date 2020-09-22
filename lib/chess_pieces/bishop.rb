@@ -18,4 +18,12 @@ class Bishop
 
     generator.generate_moves
   end
+
+  def to_s
+    if player == :white
+      "\u2657"
+    else
+      "\u265d"
+    end
+  end
 end

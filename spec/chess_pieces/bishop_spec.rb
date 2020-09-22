@@ -80,5 +80,31 @@ RSpec.describe Bishop do
       end
     end
   end
+
+  describe '#to_s' do
+    context 'when it belongs to white player' do
+      subject(:bishop) { described_class.new(:white, [0, 2]) }
+
+      it 'returns a white unicode bishop' do
+        white_unicode_bishop = "\u2657"
+
+        stringified_bishop = bishop.to_s
+
+        expect(stringified_bishop).to eq white_unicode_bishop
+      end
+    end
+    
+    context 'when it belongs to black player' do
+      subject(:bishop) { described_class.new(:black, [7, 2]) }
+
+      it 'returns a black unicode bishop' do
+        black_unicode_bishop = "\u265d"
+
+        stringified_bishop = bishop.to_s
+
+        expect(stringified_bishop).to eq black_unicode_bishop
+      end
+    end
+  end
 end
 # rubocop: enable all
