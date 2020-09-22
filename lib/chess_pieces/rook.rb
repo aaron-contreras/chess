@@ -19,4 +19,12 @@ class Rook
 
     generator.generate_moves
   end
+
+  def to_s
+    if player == :white
+      "\u2656"
+    else
+      "\u265c"
+    end
+  end
 end
