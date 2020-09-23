@@ -4,6 +4,8 @@ require_relative 'chess_piece'
 require_relative '../generators/single_jump_move_generator'
 require_relative '../special_generators/castling_generator'
 
+# A single-jump piece that has a special move called "Castling".
+# Its possible moves is a combination of its "single jump" moves and the special castling move
 class King < ChessPiece
   attr_reader :moved
 
