@@ -7,7 +7,6 @@ class ChessPiece
   def initialize(player, position)
     @player = player
     @position = position
-    @moved = false
   end
 
   def moves(other_pieces)

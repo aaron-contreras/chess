@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Generator
-
   def initialize(piece, other_pieces, jump_directions)
     @piece = piece
     @other_pieces = other_pieces
