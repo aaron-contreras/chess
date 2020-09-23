@@ -18,5 +18,32 @@ RSpec.describe King do
         expect(list_of_moves).to be_empty
       end
     end
+
+    context 'when in a position able to move but not capture' do
+      subject(:king) { described_class.new(:black, [4, 4])}
+
+      it 'returns an array with all valid moves' do
+        other_pieces = pieces.reject.with_index { |_piece, index| index == 28 }
+
+        list_of_moves = king.moves(other_pieces)
+
+        expect(list_of_moves).to contain_exactly([3, 4], [3, 5], [4, 5], [5, 5], [5, 4], [5, 3], [4, 3], [3, 3])
+      end
+    end
+
+    context 'when in a position able to move and capture' do
+      subject(:king) { described_class.new(:white, [2, 4]) }
+
+      it 'returns an array with all valid moves/caputres' do
+        # Place a black pawn in a capturable position
+        allow(pieces[16]).to receive(:position).and_return([3, 4])
+
+        other_pieces = pieces.reject.with_index { |_piece, index| index == 4 }
+
+        list_of_moves = king.moves(other_pieces)
+
+        expect(list_of_moves).to contain_exactly([2, 5], [3, 5], [3, 4], [3, 3], [2, 3])
+      end
+    end
   end
 end
