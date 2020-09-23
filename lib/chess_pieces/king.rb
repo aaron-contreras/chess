@@ -15,4 +15,12 @@ class King < ChessPiece
 
     generator.generate_moves
   end
+
+  def to_s
+    if player == :white
+      "\u2654"
+    else
+      "\u265a"
+    end
+  end
 end
