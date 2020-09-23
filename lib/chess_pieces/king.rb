@@ -5,11 +5,8 @@ require_relative '../generators/single_jump_move_generator'
 require_relative '../special_generators/castling_generator'
 
 class King < ChessPiece
-  attr_reader :moved
-
   def initialize(player, position)
     super(player, position)
-    @moved = false
   end
 
   def moves(other_pieces)

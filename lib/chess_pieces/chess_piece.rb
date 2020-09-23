@@ -2,11 +2,12 @@
 
 # Base class with common attributes and behavior for a chess piece
 class ChessPiece
-  attr_reader :player, :position
+  attr_reader :player, :position, :moved
 
   def initialize(player, position)
     @player = player
     @position = position
+    @moved = false
   end
 
   def moves(other_pieces)
