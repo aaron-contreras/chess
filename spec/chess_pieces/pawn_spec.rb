@@ -63,5 +63,20 @@ RSpec.describe Pawn do
         expect(list_of_moves).to contain_exactly([2, 2], [3, 2], [2, 1])
       end
     end
+
+    # TODO second
+    # ADD TEST FOR EN PASSANT MOVES
+
+  end
+
+  # TODO first
+  # Crucial method
+  describe '#en_passant_capturable?' do
+    context 'when has moved since double jump' do
+      subject(:pawn) { described_class}
+      it 'returns false' do
+        
+      end
+    end
   end
 end

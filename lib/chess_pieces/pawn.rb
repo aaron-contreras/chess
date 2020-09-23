@@ -2,15 +2,28 @@
 
 require_relative 'chess_piece'
 require_relative '../generators/pawn_move_generator'
+require_relative '../special_generators/en_passant_generator'
+
 class Pawn < ChessPiece
+  attr_accessor :double_jumped
+  attr_reader :moves_since_double_jump
+
   def initialize(player, position)
     super(player, position)
+    @double_jumped = false
+    @moves_since_double_jump = 0
   end
 
   def moves(other_pieces)
-    generator = PawnMoveGenerator.new(self, other_pieces, jump_directions, capture_directions)
+    simple_generator = PawnMoveGenerator.new(self, other_pieces, jump_directions, capture_directions)
 
-    generator.generate_moves
+    special_generator = EnPassantGenerator.new(self, other_pieces, capture_directions)
+
+    simple_generator.generate_moves + special_generator.en_passant_moves
+  end
+
+  def en_passant_capturable?
+    double_jumped && moves_since_double_jump.zero?
   end
 
   private

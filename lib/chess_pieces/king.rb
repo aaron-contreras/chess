@@ -32,7 +32,7 @@ class King < ChessPiece
 
   def castling(other_pieces)
     generator = CastlingGenerator.new(self, other_pieces)
-    
+
     generator.generate_castling
   end
 end
