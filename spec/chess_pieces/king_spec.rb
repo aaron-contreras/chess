@@ -45,6 +45,35 @@ RSpec.describe King do
         expect(list_of_moves).to contain_exactly([2, 5], [3, 5], [3, 4], [3, 3], [2, 3])
       end
     end
+
+    context 'when able to perform long side castling' do
+      subject(:king) { described_class.new(:white, [0, 4]) }
+      it 'returns an array with valid moves/captures/castling' do
+        # Make the castle move available
+        other_pieces = pieces.reject.with_index { |_piece, index| [1, 2, 3].include?(index) }
+
+        long_side_rook = pieces[0]
+
+        list_of_moves = king.moves(other_pieces)
+
+        expect(list_of_moves).to contain_exactly([0, 3], a_kind_of(Castling))
+      end
+    end
+
+    context 'when able to perform short side castling' do
+      subject(:king) { described_class.new(:black, [7, 4]) }
+
+      it 'returns an array with valid moves/captures/castling' do
+        # Make the castle move available
+        other_pieces = pieces.reject.with_index { |_piece, index| [29, 30].include?(index) }
+
+        short_side_rook = pieces[31]
+        
+        list_of_moves = king.moves(other_pieces)
+
+        expect(list_of_moves).to contain_exactly([7, 5], a_kind_of(Castling))
+      end
+    end
   end
 
   describe '#to_s' do
