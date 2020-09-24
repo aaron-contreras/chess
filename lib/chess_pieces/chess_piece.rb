@@ -17,4 +17,8 @@ class ChessPiece
   def en_passant_capturable?
     false
   end
+
+  def to_s
+    raise NotImplementedError, 'Give your piece a way to display itself on the board'
+  end
 end

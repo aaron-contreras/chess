@@ -4,6 +4,9 @@ require_relative 'chess_piece'
 require_relative '../generators/pawn_move_generator'
 require_relative '../special_generators/en_passant_generator'
 
+# A chess piece with special moving conditions based on its current state in
+# the game. Can perform a special type of move called "En Passant"
+
 class Pawn < ChessPiece
   attr_accessor :double_jumped
   attr_reader :moves_since_double_jump
@@ -24,6 +27,14 @@ class Pawn < ChessPiece
 
   def en_passant_capturable?
     double_jumped && moves_since_double_jump.zero?
+  end
+
+  def to_s
+    if player == :white
+      "\u2659"
+    else
+      "\u265f"
+    end
   end
 
   private
