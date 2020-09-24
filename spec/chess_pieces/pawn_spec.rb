@@ -66,16 +66,38 @@ RSpec.describe Pawn do
 
     # TODO second
     # ADD TEST FOR EN PASSANT MOVES
-
   end
 
-  # TODO first
-  # Crucial method
   describe '#en_passant_capturable?' do
-    context 'when has moved since double jump' do
-      subject(:pawn) { described_class}
+    subject(:pawn) { described_class.new(:white, [3, 2]) }
+
+    context 'when there have been moves since a double jump' do
       it 'returns false' do
-        
+        # Set up conditions
+        pawn.double_jumped = true
+        pawn.instance_variable_set(:@moves_since_double_jump, 1)
+
+        expect(pawn).not_to be_en_passant_capturable
+      end
+    end
+
+    context 'when pawn just double jumped' do
+      it 'returns true' do
+        # Set up conditions
+        pawn.double_jumped = true
+        # Pawn has not gotten another turn yet
+
+        expect(pawn).to be_en_passant_capturable
+      end
+    end
+
+    context "when pawn didn't double jump as first move" do
+      subject(:pawn) { described_class.new(:black, [5, 2]) }
+
+      it 'returns false' do
+        # Pawn hasn't double jumped
+
+        expect(pawn).not_to be_en_passant_capturable
       end
     end
   end
