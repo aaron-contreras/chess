@@ -7,11 +7,8 @@ require_relative '../special_generators/castling_generator'
 # A single-jump piece that has a special move called "Castling".
 # Its possible moves is a combination of its "single jump" moves and the special castling move
 class King < ChessPiece
-  attr_reader :moved
-
   def initialize(player, position)
     super(player, position)
-    @moved = false
   end
 
   def moves(other_pieces)
@@ -37,7 +34,7 @@ class King < ChessPiece
 
   def castling(other_pieces)
     generator = CastlingGenerator.new(self, other_pieces)
-    
+
     generator.generate_castling
   end
 end

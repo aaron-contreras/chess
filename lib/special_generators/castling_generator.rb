@@ -6,6 +6,7 @@ class Castling
     @rook = rook
   end
 end
+
 class CastlingGenerator
   def initialize(king, other_pieces)
     @king = king
