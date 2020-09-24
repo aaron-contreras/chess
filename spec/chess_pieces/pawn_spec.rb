@@ -124,5 +124,31 @@ RSpec.describe Pawn do
       end
     end
   end
+
+  describe '#to_s' do
+    context 'when it belongs to white player' do
+      subject(:pawn) { described_class.new(:white, [0, 0]) }
+
+      it 'returns a white unicode pawn' do
+        white_unicode_pawn = "\u2659"
+
+        stringified_pawn = pawn.to_s
+
+        expect(stringified_pawn).to eq white_unicode_pawn
+      end
+    end
+
+    context 'when it belongs to black player' do
+      subject(:pawn) { described_class.new(:black, [7, 7]) }
+
+      it 'returns a black unicode pawn' do
+        black_unicode_pawn = "\u265f"
+
+        stringified_pawn = pawn.to_s
+
+        expect(stringified_pawn).to eq black_unicode_pawn
+      end
+    end
+  end
 end
 # rubocop: enable all

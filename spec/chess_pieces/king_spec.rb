@@ -12,7 +12,7 @@ RSpec.describe King do
 
       it 'returns an empty array' do
         other_pieces = pieces.reject.with_index { |_piece, index| index == 4 }
-        
+
         list_of_moves = king.moves(other_pieces)
 
         expect(list_of_moves).to be_empty
