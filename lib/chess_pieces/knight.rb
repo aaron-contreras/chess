@@ -3,6 +3,8 @@
 require_relative 'chess_piece'
 require_relative '../generators/single_jump_move_generator'
 
+# A single-jumping piece which can 'gallop' over pieces blocking it.
+# Moves in an L-shaped path
 class Knight < ChessPiece
   def initialize(player, position)
     super(player, position)

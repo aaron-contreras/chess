@@ -4,6 +4,8 @@ require_relative 'chess_piece'
 require_relative '../generators/single_jump_move_generator'
 require_relative '../special_generators/castling_generator'
 
+# A single-jumping chess piece. It moves in all directions and can perform a
+# special move called "Castling".
 class King < ChessPiece
   def initialize(player, position)
     super(player, position)
