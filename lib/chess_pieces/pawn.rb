@@ -29,14 +29,6 @@ class Pawn < ChessPiece
     double_jumped && moves_since_double_jump.zero?
   end
 
-  def to_s
-    if player == :white
-      "\u2659"
-    else
-      "\u265f"
-    end
-  end
-
   private
 
   def color_direction

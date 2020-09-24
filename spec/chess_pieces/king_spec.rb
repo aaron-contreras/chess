@@ -3,8 +3,14 @@
 require_relative '../../lib/chess_pieces/king'
 require_relative '../shared/among_chess_pieces'
 
+# rubocop: disable all
 RSpec.describe King do
   include_context 'list_of_pieces'
+
+  describe '#to_s' do
+    include_examples 'piece_display', described_class.new(:white, [0, 4])
+    include_examples 'piece_display', described_class.new(:black, [7, 4])
+  end
 
   describe '#moves' do
     context 'when not in a position to move' do
@@ -72,32 +78,6 @@ RSpec.describe King do
         list_of_moves = king.moves(other_pieces)
 
         expect(list_of_moves).to contain_exactly([7, 5], a_kind_of(Castling))
-      end
-    end
-  end
-
-  describe '#to_s' do
-    context 'when it belongs to white player' do
-      subject(:king) { described_class.new(:white, [0, 0]) }
-
-      it 'returns a white unicode king' do
-        white_unicode_king = "\u2654"
-
-        stringified_king = king.to_s
-
-        expect(stringified_king).to eq white_unicode_king
-      end
-    end
-
-    context 'when it belongs to black player' do
-      subject(:king) { described_class.new(:black, [7, 7]) }
-
-      it 'returns a black unicode king' do
-        black_unicode_king = "\u265a"
-
-        stringified_king = king.to_s
-
-        expect(stringified_king).to eq black_unicode_king
       end
     end
   end

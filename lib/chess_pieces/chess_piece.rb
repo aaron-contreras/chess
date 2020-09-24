@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative '../game_constants'
+
 # Base class with common attributes and behavior for a chess piece
 class ChessPiece
   attr_reader :player, :position, :moved
@@ -19,6 +21,8 @@ class ChessPiece
   end
 
   def to_s
-    raise NotImplementedError, 'Give your piece a way to display itself on the board'
+    piece_type = self.class.to_s.to_sym 
+    GConst::UNICODE_PIECES.dig(player, piece_type)
+    # raise NotImplementedError, 'Give your piece a way to display itself on the board'
   end
 end

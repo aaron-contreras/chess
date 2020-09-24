@@ -2,10 +2,16 @@
 
 require_relative '../../lib/chess_pieces/rook'
 require_relative '../shared/among_chess_pieces.rb'
+
 # rubocop: disable all
 
 RSpec.describe Rook do
   include_context 'list_of_pieces'
+
+  describe '#to_s' do
+    include_examples 'piece_display', described_class.new(:white, [0, 0])
+    include_examples 'piece_display', described_class.new(:black, [7, 0])
+  end
 
   describe '#moves' do
     context 'when not in a position to move' do
@@ -45,32 +51,6 @@ RSpec.describe Rook do
         list_of_moves = rook.moves(other_pieces)
 
         expect(list_of_moves).to contain_exactly([3, 1], [2, 1], [1, 1], [4, 2], [4, 3], [4, 4], [4, 5], [5, 1], [4, 0])
-      end
-    end
-  end
-
-  describe '#to_s' do
-    context 'when it belongs to white player' do
-      subject(:rook) { described_class.new(:white, [0, 0]) }
-
-      it 'returns a white unicode rook' do
-        white_unicode_rook = "\u2656"
-
-        stringified_rook = rook.to_s
-
-        expect(stringified_rook).to eq white_unicode_rook
-      end
-    end
-    
-    context 'when it belongs to black player' do
-      subject(:rook) { described_class.new(:black, [7, 7]) }
-
-      it 'returns a black unicode rook' do
-        black_unicode_rook = "\u265c"
-
-        stringified_rook = rook.to_s
-
-        expect(stringified_rook).to eq black_unicode_rook
       end
     end
   end

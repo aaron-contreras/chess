@@ -18,12 +18,4 @@ class Queen < ChessPiece
 
     generator.generate_moves
   end
-
-  def to_s
-    if player == :white
-      "\u2655"
-    else
-      "\u265b"
-    end
-  end
 end
