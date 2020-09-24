@@ -6,6 +6,11 @@ require_relative '../shared/among_chess_pieces'
 RSpec.describe Knight do
   include_context 'list_of_pieces'
 
+  describe '#to_s' do
+    include_examples 'piece_display', described_class.new(:white, [0, 1])
+    include_examples 'piece_display', described_class.new(:black, [7, 1])
+  end
+
   describe '#moves' do
     context 'when not in a position to move' do
       subject(:knight) { described_class.new(:black, [5, 3]) }
@@ -49,32 +54,6 @@ RSpec.describe Knight do
         list_of_moves = knight.moves(other_pieces)
 
         expect(list_of_moves).to contain_exactly([2, 5], [3, 6], [5, 6], [5, 2], [3, 2], [2, 3])
-      end
-    end
-  end
-
-  describe '#to_s' do
-    context 'when it belongs to white player' do
-      subject(:knight) { described_class.new(:white, [0, 3]) }
-
-      it 'returns a white unicode knight' do
-        white_unicode_knight = "\u2658"
-
-        stringified_knight = knight.to_s
-
-        expect(stringified_knight).to eq white_unicode_knight
-      end
-    end
-
-    context 'when it belongs to black player' do
-      subject(:knight) { described_class.new(:black, [7, 3]) }
-
-      it 'returns a black unicode knight' do
-        black_unicode_knight = "\u265e"
-
-        stringified_knight = knight.to_s
-
-        expect(stringified_knight).to eq black_unicode_knight
       end
     end
   end

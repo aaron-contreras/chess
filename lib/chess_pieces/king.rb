@@ -22,14 +22,6 @@ class King < ChessPiece
     (standard_moves + special_moves).compact
   end
 
-  def to_s
-    if player == :white
-      "\u2654"
-    else
-      "\u265a"
-    end
-  end
-
   private
 
   def castling(other_pieces)
