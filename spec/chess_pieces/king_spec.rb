@@ -68,7 +68,7 @@ RSpec.describe King do
         other_pieces = pieces.reject.with_index { |_piece, index| [29, 30].include?(index) }
 
         short_side_rook = pieces[31]
-        
+
         list_of_moves = king.moves(other_pieces)
 
         expect(list_of_moves).to contain_exactly([7, 5], a_kind_of(Castling))
@@ -88,7 +88,7 @@ RSpec.describe King do
         expect(stringified_king).to eq white_unicode_king
       end
     end
-    
+
     context 'when it belongs to black player' do
       subject(:king) { described_class.new(:black, [7, 7]) }
 

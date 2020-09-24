@@ -3,9 +3,11 @@
 require_relative '../../lib/chess_pieces/pawn'
 require_relative '../shared/among_chess_pieces.rb'
 
+# rubocop: disable all
+
 RSpec.describe Pawn do
   include_context 'list_of_pieces'
-  
+
   describe '#moves' do
     context "when it hasn't yet moved" do
       subject(:pawn) { described_class.new(:white, [1, 1]) }
@@ -64,8 +66,29 @@ RSpec.describe Pawn do
       end
     end
 
-    # TODO second
-    # ADD TEST FOR EN PASSANT MOVES
+    context 'when able to capture "En Passant"' do
+      subject(:pawn) { described_class.new(:black, [3, 3]) }
+
+      it 'returns all valid moves/captures/en passants' do
+        # Set up enemy pawn to be capturable by en passant
+
+        enemy_pawn = pieces[10]
+        allow(enemy_pawn).to receive(:position).and_return([3, 2])
+        allow(enemy_pawn).to receive(:en_passant_capturable?).and_return(true)
+
+        other_pieces = pieces.reject.with_index { |_piece, index| index == 26 }
+
+        list_of_moves = pawn.moves(other_pieces)
+
+        en_passant_move = list_of_moves.find { |move| move.is_a?(EnPassant) }
+
+        # Correct list of moves
+        expect(list_of_moves).to contain_exactly([2, 3], a_kind_of(EnPassant))
+
+        # Correct En Passant contents
+        expect(en_passant_move).to have_attributes(pawn: pawn, enemy_pawn: enemy_pawn, ending_position: [2, 2])
+      end
+    end
   end
 
   describe '#en_passant_capturable?' do
@@ -102,3 +125,4 @@ RSpec.describe Pawn do
     end
   end
 end
+# rubocop: enable all
