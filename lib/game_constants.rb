@@ -12,6 +12,15 @@ module GameConstants
       King: "\u2654", Pawn: "\u2659"
     }
   }.freeze
+
+  # CASTLING
+  LONG_SIDE_FILE = 0
+  SHORT_SIDE_FILE = 7
+
+  BLOCKER_FILES = {
+    long_side: [1, 2, 3],
+    short_side: [5, 6]
+  }.freeze
 end
 
 # Alias for module
