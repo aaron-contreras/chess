@@ -73,25 +73,48 @@ RSpec.describe Pawn do
 
     context 'when able to capture "En Passant"' do
       subject(:pawn) { described_class.new(:black, [3, 3]) }
+      context 'to its left' do
+        it 'returns all valid moves/captures/en passants' do
+          # Set up enemy pawn to be capturable by en passant
 
-      it 'returns all valid moves/captures/en passants' do
-        # Set up enemy pawn to be capturable by en passant
+          enemy_pawn = pieces[10]
+          allow(enemy_pawn).to receive(:position).and_return([3, 2])
+          allow(enemy_pawn).to receive(:en_passant_capturable?).and_return(true)
 
-        enemy_pawn = pieces[10]
-        allow(enemy_pawn).to receive(:position).and_return([3, 2])
-        allow(enemy_pawn).to receive(:en_passant_capturable?).and_return(true)
+          other_pieces = pieces.reject.with_index { |_piece, index| index == 26 }
 
-        other_pieces = pieces.reject.with_index { |_piece, index| index == 26 }
+          list_of_moves = pawn.moves(other_pieces)
 
-        list_of_moves = pawn.moves(other_pieces)
+          en_passant_move = list_of_moves.find { |move| move.is_a?(Moves::EnPassant) }
 
-        en_passant_move = list_of_moves.find { |move| move.is_a?(EnPassant) }
+          # Correct list of moves
+          expect(list_of_moves).to contain_exactly([2, 3], a_kind_of(Moves::EnPassant))
 
-        # Correct list of moves
-        expect(list_of_moves).to contain_exactly([2, 3], a_kind_of(EnPassant))
+          # Correct En Passant contents
+          expect(en_passant_move).to have_attributes(pawn: pawn, enemy_pawn: enemy_pawn, ending_position: [2, 2])
+        end
+      end
 
-        # Correct En Passant contents
-        expect(en_passant_move).to have_attributes(pawn: pawn, enemy_pawn: enemy_pawn, ending_position: [2, 2])
+      context 'to its right' do
+        it 'returns all valid moves/captures/en passants' do
+          # Set up enemy pawn to be capturable by en passant
+
+          enemy_pawn = pieces[12]
+          allow(enemy_pawn).to receive(:position).and_return([3, 4])
+          allow(enemy_pawn).to receive(:en_passant_capturable?).and_return(true)
+
+          other_pieces = pieces.reject.with_index { |_piece, index| index == 26 }
+
+          list_of_moves = pawn.moves(other_pieces)
+
+          en_passant_move = list_of_moves.find { |move| move.is_a?(Moves::EnPassant) }
+
+          # Correct list of moves
+          expect(list_of_moves).to contain_exactly([2, 3], a_kind_of(Moves::EnPassant))
+
+          # Correct En Passant contents
+          expect(en_passant_move).to have_attributes(pawn: pawn, enemy_pawn: enemy_pawn, ending_position: [2, 4])
+        end
       end
     end
   end
