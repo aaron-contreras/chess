@@ -2,6 +2,7 @@
 
 # Game info and settings used all throughout
 module GameConstants
+  # DISPLAY
   UNICODE_PIECES = {
     black: {
       Rook: "\u265c", Knight: "\u265e", Bishop: "\u265d", Queen: "\u265b",
