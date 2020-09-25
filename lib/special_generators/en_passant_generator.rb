@@ -1,14 +1,8 @@
 # frozen_string_literal: true
-class EnPassant
-  attr_reader :pawn, :enemy_pawn, :ending_position
 
-  def initialize(pawn, enemy_pawn, ending_position)
-    @pawn = pawn
-    @enemy_pawn = enemy_pawn
-    @ending_position = ending_position
-  end
-end
+require_relative '../moves'
 
+# Generates valid 'En Passant' moves for a pawn
 class EnPassantGenerator
   def initialize(pawn, other_pieces, capture_directions)
     @pawn = pawn
@@ -18,13 +12,10 @@ class EnPassantGenerator
 
   def en_passant_moves
     en_passant_moves = []
-    enemy_pawn = capturable_enemy_pawn
 
-    if enemy_pawn
-      ending_position = target_position(enemy_pawn)
+    enemy_pawn = find_capturable_enemy_pawn
 
-      en_passant_moves << EnPassant.new(pawn, enemy_pawn, ending_position)
-    end
+    en_passant_moves << Moves::EnPassant.new(pawn, enemy_pawn, ending_position(enemy_pawn)) if enemy_pawn
 
     en_passant_moves
   end
@@ -33,21 +24,30 @@ class EnPassantGenerator
 
   attr_reader :pawn, :other_pieces, :capture_directions
 
-  def next_to_pawn?(piece)
-    pawn.position[0] == piece.position[0] && (pawn.position[1] - piece.position[1]) == 1
+  def adjacent?(piece)
+    (pawn.position[1] - piece.position[1]).abs == 1
   end
 
-  def capturable_enemy_pawn
+  def next_to_pawn?(piece)
+    pawn.position[0] == piece.position[0] && adjacent?(piece)
+  end
+
+  def find_capturable_enemy_pawn
     other_pieces.find { |piece| piece.en_passant_capturable? && next_to_pawn?(piece) }
   end
 
-  def target_position(enemy_piece)
-    enemy_piece_file = enemy_piece.position[1]
+  def file_difference(enemy_piece)
+    enemy_piece.position[1] - pawn.position[1]
+  end
 
-    possible_targets = capture_directions.map do |direction|
-      [pawn.position[0] + direction[0], pawn.position[1] + direction[1]]
-    end
+  # Capture direction based on where the enemy pawn is
+  def select_capture_direction(enemy_piece)
+    capture_directions.find { |direction| direction[1] == file_difference(enemy_piece) }
+  end
 
-    possible_targets.find { |target| enemy_piece_file == target[1] }
+  def ending_position(enemy_piece)
+    capture_direction = select_capture_direction(enemy_piece)
+
+    [pawn.position[0] + capture_direction[0], pawn.position[1] + capture_direction[1]]
   end
 end
