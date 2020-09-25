@@ -62,7 +62,7 @@ RSpec.describe King do
 
         list_of_moves = king.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([0, 3], a_kind_of(Castling))
+        expect(list_of_moves).to contain_exactly([0, 3], a_kind_of(Moves::Castling))
       end
     end
 
@@ -77,7 +77,7 @@ RSpec.describe King do
 
         list_of_moves = king.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([7, 5], a_kind_of(Castling))
+        expect(list_of_moves).to contain_exactly([7, 5], a_kind_of(Moves::Castling))
       end
     end
   end
