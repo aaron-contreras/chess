@@ -22,7 +22,12 @@ RSpec.describe Pawn do
 
         list_of_moves = pawn.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([2, 1], [3, 1])
+        expected_moves = [
+          { type: :standard, piece: pawn, ending_position: [2, 1] },
+          { type: :standard, piece: pawn, ending_position: [3, 1] }
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -35,9 +40,13 @@ RSpec.describe Pawn do
 
         other_pieces = pieces.reject.with_index { |_piece, index| index == 19 }
 
+        expected_moves = [
+          { type: :standard, piece: pawn, ending_position: [4, 3] }
+        ]
+
         list_of_moves = pawn.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([4, 3])
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -52,7 +61,11 @@ RSpec.describe Pawn do
 
         list_of_moves = pawn.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([3, 3])
+        expected_moves = [
+          { type: :standard, piece: pawn, ending_position: [3, 3] }
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -61,22 +74,29 @@ RSpec.describe Pawn do
 
       it 'returns all valid moves/captures' do
         # Set up a bishop to be capturable by the pawn
-        allow(pieces[26]).to receive(:position).and_return([2, 1])
+        enemy_piece = pieces[26]
+        allow(enemy_piece).to receive(:position).and_return([2, 1])
 
         other_pieces = pieces.reject.with_index { |_piece, index| index == 10 }
 
         list_of_moves = pawn.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([2, 2], [3, 2], [2, 1])
+        expected_moves = [
+          { type: :capture, piece: pawn, captured_piece: enemy_piece, ending_position: [2, 1] },
+          { type: :standard, piece: pawn, ending_position: [3, 2] },
+          { type: :standard, piece: pawn, ending_position: [2, 2] }
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
     context 'when able to capture "En Passant"' do
       subject(:pawn) { described_class.new(:black, [3, 3]) }
+
       context 'to its left' do
         it 'returns all valid moves/captures/en passants' do
           # Set up enemy pawn to be capturable by en passant
-
           enemy_pawn = pieces[10]
           allow(enemy_pawn).to receive(:position).and_return([3, 2])
           allow(enemy_pawn).to receive(:en_passant_capturable?).and_return(true)
@@ -85,17 +105,12 @@ RSpec.describe Pawn do
 
           list_of_moves = pawn.moves(other_pieces)
 
-          en_passant_move = list_of_moves.find { |move| move[:type] == :en_passant }
+          expected_moves = [
+            { type: :standard, piece: pawn, ending_position: [2, 3] },
+            { type: :en_passant, piece: pawn, captured_piece: enemy_pawn, ending_position: [2, 2]}
+          ]
 
-          # Correct list of moves
-          expect(list_of_moves).to contain_exactly([2, 3], a_kind_of(Moves::EnPassant))
-
-          # Correct En Passant contents
-          expect(en_passant_move).to include(
-            pawn: pawn,
-            enemy_pawn: enemy_pawn,
-            ending_position: [2, 2]
-          )
+          expect(list_of_moves).to contain_exactly(*expected_moves)
         end
       end
 
@@ -111,13 +126,12 @@ RSpec.describe Pawn do
 
           list_of_moves = pawn.moves(other_pieces)
 
-          en_passant_move = list_of_moves.find { |move| move.is_a?(Moves::EnPassant) }
+          expected_moves = [
+            { type: :standard, piece: pawn, ending_position: [2, 3] },
+            { type: :en_passant, piece: pawn, captured_piece: enemy_pawn, ending_position: [2, 4] }
+          ]
 
-          # Correct list of moves
-          expect(list_of_moves).to contain_exactly([2, 3], a_kind_of(Moves::EnPassant))
-
-          # Correct En Passant contents
-          expect(en_passant_move).to have_attributes(pawn: pawn, enemy_pawn: enemy_pawn, ending_position: [2, 4])
+          expect(list_of_moves).to contain_exactly(*expected_moves)
         end
       end
     end

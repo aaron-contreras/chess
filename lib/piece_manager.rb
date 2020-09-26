@@ -14,11 +14,11 @@ class PieceManager
   end
 
   def update_piece_set(move)
-    if %i[standard en_passant].include?(move[:type])
+    if move[:type] == :standard
       move_piece(move)
     elsif move[:type] == :castling
       castle(move)
-    elsif move[:type] == :capture
+    elsif %i[capture en_passant].include?(move[:type])
       move_piece(move)
       capture(move[:captured_piece])
     end

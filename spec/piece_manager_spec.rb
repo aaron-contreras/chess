@@ -61,7 +61,7 @@ RSpec.describe PieceManager do
     context 'when given an "en passant" move' do
       let(:pawn) { pieces[26] }
       let(:piece_to_capture) { pieces[9] }
-      let(:move) { { type: :capture, piece: pawn, captured_piece: piece_to_capture, piece_ending_position: [2, 1] } }
+      let(:move) { { type: :en_passant, piece: pawn, captured_piece: piece_to_capture, piece_ending_position: [2, 1] } }
 
       it 'performs the en passant move' do
         piece_set = manager.update_piece_set(move)
