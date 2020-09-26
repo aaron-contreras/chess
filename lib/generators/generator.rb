@@ -15,8 +15,8 @@ class Generator
 
   attr_reader :piece, :other_pieces, :jump_directions
 
-  def valid_position?(position)
-    inbound?(position) && (no_piece_at?(position) || other_player_is_at?(position))
+  def valid_move?(position)
+    inbound?(position) && no_piece_at?(position)
   end
 
   def next_jump(position, direction)

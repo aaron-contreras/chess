@@ -14,30 +14,55 @@ class StandardMoveGenerator < Generator
   end
 
   def generate_moves
-    jump_directions.map do |direction|
-      movable_locations(direction)
-    end.reject(&:empty?).flatten(1)
+    moves + captures
   end
 
   private
 
-  def movable_locations(direction, has_not_captured = true)
-    locations_in_direction = []
-    hypothetical_position = next_jump(piece.position, direction)
+  def moves
+    jump_directions.map do |direction|
+      valid_moves(direction)
+    end.reject(&:empty?).flatten(1)
+  end
 
-    while valid_position?(hypothetical_position) && has_not_captured
-      locations_in_direction << hypothetical_position
+  def valid_moves(direction)
+    moves_in_direction = []
+    jump = next_jump(piece.position, direction)
 
-      has_not_captured = false if capture?(hypothetical_position)
+    while valid_move?(jump)
+      moves_in_direction << { type: :standard, piece: piece, ending_position: jump }
 
-      hypothetical_position = next_jump(hypothetical_position, direction)
-
+      jump = next_jump(jump, direction)
     end
 
-    locations_in_direction
+    moves_in_direction
+  end
+
+  def captures
+    jump_directions.map do |direction|
+      moves = valid_moves(direction)
+
+      next unless next_jump_captures?(moves, direction)
+
+      ending_position = next_jump(moves.last[:ending_position], direction)
+
+      captured_piece = piece_at(ending_position)
+
+      { type: :capture, piece: piece, captured_piece: captured_piece, ending_position: ending_position }
+    end.compact
+  end
+
+  def next_jump_captures?(moves, direction)
+    return if moves.empty?
+
+    last_jump = moves.last[:ending_position]
+
+    jump = next_jump(last_jump, direction)
+
+    capture?(jump)
   end
 
   def capture?(position)
-    inbound?(position) && piece_at(position) && other_player_is_at?(position)
+    position && inbound?(position) && piece_at(position) && other_player_is_at?(position)
   end
 end
