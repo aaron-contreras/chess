@@ -14,6 +14,9 @@ class PieceManager
   def update_piece_set(piece, move)
     if move[:type] == :standard
       piece.position = move[:ending_position]
+    elsif move[:type] == :castling
+      move[:king].position = move[:king_ending_position]
+      move[:rook].position = move[:rook_ending_position]
     elsif move[:type] == :capture
       piece.position = move[:ending_position]
       capture(move[:captured_piece])
@@ -23,10 +26,6 @@ class PieceManager
   end
 
   private
-
-  def other_pieces(piece)
-    all_pieces.reject { |some_piece| some_piece == piece }
-  end
 
   def capture(piece)
     if piece.player == :white
