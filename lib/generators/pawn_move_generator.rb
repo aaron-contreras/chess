@@ -15,27 +15,29 @@ class PawnMoveGenerator < Generator
 
   private
 
+  attr_reader :capture_directions
+
   def moves
     jump_directions.map do |direction|
-      hypothetical_jump = next_jump(piece.position, direction)
-      hypothetical_jump if valid_position?(hypothetical_jump)
+      jump = next_jump(piece.position, direction)
+
+      { type: :standard, piece: piece, ending_position: jump } if valid_move?(jump)
     end
   end
 
   def captures
     capture_directions.map do |direction|
-      hypothetical_capture = next_jump(piece.position, direction)
-      hypothetical_capture if valid_capture?(hypothetical_capture)
+      jump = next_jump(piece.position, direction)
+
+      { type: :capture, piece: piece, captured_piece: piece_at(jump), ending_position: jump } if valid_capture?(jump)
     end
   end
 
-  def valid_position?(position)
+  def valid_move?(position)
     inbound?(position) && no_piece_at?(position)
   end
 
   def valid_capture?(position)
     inbound?(position) && piece_at(position) && other_player_is_at?(position)
   end
-
-  attr_reader :capture_directions
 end

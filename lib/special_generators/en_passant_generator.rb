@@ -16,7 +16,7 @@ class EnPassantGenerator
     if capturable_enemy_pawn?
       enemy_pawn = find_capturable_enemy_pawn
 
-      move = { type: :capture, piece: pawn, captured_piece: enemy_pawn, ending_position: ending_position(enemy_pawn) }
+      move = { type: :en_passant, piece: pawn, captured_piece: enemy_pawn, ending_position: ending_position(enemy_pawn) }
 
       en_passant_moves << move
     end
