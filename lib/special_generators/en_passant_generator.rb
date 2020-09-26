@@ -13,9 +13,13 @@ class EnPassantGenerator
   def en_passant_moves
     en_passant_moves = []
 
-    enemy_pawn = find_capturable_enemy_pawn
+    if capturable_enemy_pawn?
+      enemy_pawn = find_capturable_enemy_pawn
 
-    en_passant_moves << Moves::EnPassant.new(pawn, enemy_pawn, ending_position(enemy_pawn)) if enemy_pawn
+      move = { type: :capture, piece: pawn, captured_piece: enemy_pawn, ending_position: ending_position(enemy_pawn) }
+
+      en_passant_moves << move
+    end
 
     en_passant_moves
   end
@@ -30,6 +34,10 @@ class EnPassantGenerator
 
   def next_to_pawn?(piece)
     pawn.position[0] == piece.position[0] && adjacent?(piece)
+  end
+
+  def capturable_enemy_pawn?
+    other_pieces.any? { |piece| piece.en_passant_capturable? && next_to_pawn?(piece) }
   end
 
   def find_capturable_enemy_pawn

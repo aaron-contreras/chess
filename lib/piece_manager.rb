@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# In charge of updating pieces after every move, keeping track of which
+# player has which pieces
 class PieceManager
   attr_reader :white_pieces, :black_pieces, :white_captures, :black_captures, :all_pieces
 
@@ -11,14 +13,13 @@ class PieceManager
     @all_pieces = white_pieces + black_pieces
   end
 
-  def update_piece_set(piece, move)
-    if move[:type] == :standard
-      piece.position = move[:ending_position]
+  def update_piece_set(move)
+    if %i[standard en_passant].include?(move[:type])
+      move_piece(move)
     elsif move[:type] == :castling
-      move[:king].position = move[:king_ending_position]
-      move[:rook].position = move[:rook_ending_position]
+      castle(move)
     elsif move[:type] == :capture
-      piece.position = move[:ending_position]
+      move_piece(move)
       capture(move[:captured_piece])
     end
 
@@ -26,6 +27,15 @@ class PieceManager
   end
 
   private
+
+  def move_piece(move)
+    move[:piece].position = move[:ending_position]
+  end
+
+  def castle(move)
+    move[:king].position = move[:king_ending_position]
+    move[:rook].position = move[:rook_ending_position]
+  end
 
   def capture(piece)
     if piece.player == :white

@@ -12,12 +12,12 @@ RSpec.describe PieceManager do
   describe '#update_piece_set' do
     context 'when given a "standard" non-capturing move' do
       let(:piece) { pieces[9] }
-      let(:move) { { type: :standard, ending_position: [3, 1] } }
+      let(:move) { { type: :standard, piece: piece, ending_position: [3, 1] } }
 
       it "updates the given piece's position" do
         allow(piece).to receive(:position).and_return(move)
 
-        piece_set = manager.update_piece_set(piece, move)
+        piece_set = manager.update_piece_set(move)
 
         expect(piece.position).to eq(move)
         expect(piece_set).to contain_exactly(*pieces)
@@ -27,12 +27,12 @@ RSpec.describe PieceManager do
     context 'when given a "standard" capturing move' do
       let(:piece) { pieces[9] }
       let(:piece_to_capture) { pieces[28] }
-      let(:move) { { type: :capture, ending_position: [2, 2], captured_piece: pieces[28] } }
+      let(:move) { { type: :capture, piece: piece, captured_piece: piece_to_capture, ending_position: [2, 2] } }
 
       it 'captures the piece' do
         allow(piece).to receive(:position).and_return(move)
 
-        piece_set = manager.update_piece_set(piece, move)
+        piece_set = manager.update_piece_set(move)
 
         expect(piece.position).to eq(move)
 
@@ -46,7 +46,7 @@ RSpec.describe PieceManager do
       let(:move) { { type: :castling, king: king, rook: rook, king_ending_position: [7, 1], rook_ending_position: [7, 2] } }
 
       it 'castles the king and rook' do
-        piece_set = manager.update_piece_set(king, move)
+        piece_set = manager.update_piece_set(move)
 
         allow(king).to receive(:position).and_return(move[:king_ending_position])
         allow(rook).to receive(:position).and_return(move[:rook_ending_position])
@@ -64,7 +64,7 @@ RSpec.describe PieceManager do
       let(:move) { { type: :capture, piece: pawn, captured_piece: piece_to_capture, piece_ending_position: [2, 1] } }
 
       it 'performs the en passant move' do
-        piece_set = manager.update_piece_set(pawn, move)
+        piece_set = manager.update_piece_set(move)
 
         allow(pawn).to receive(:position).and_return(move[:piece_ending_position])
 

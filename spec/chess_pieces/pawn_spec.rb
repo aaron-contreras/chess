@@ -85,13 +85,17 @@ RSpec.describe Pawn do
 
           list_of_moves = pawn.moves(other_pieces)
 
-          en_passant_move = list_of_moves.find { |move| move.is_a?(Moves::EnPassant) }
+          en_passant_move = list_of_moves.find { |move| move[:type] == :en_passant }
 
           # Correct list of moves
           expect(list_of_moves).to contain_exactly([2, 3], a_kind_of(Moves::EnPassant))
 
           # Correct En Passant contents
-          expect(en_passant_move).to have_attributes(pawn: pawn, enemy_pawn: enemy_pawn, ending_position: [2, 2])
+          expect(en_passant_move).to include(
+            pawn: pawn,
+            enemy_pawn: enemy_pawn,
+            ending_position: [2, 2]
+          )
         end
       end
 
