@@ -15,20 +15,20 @@ class Generator
 
   attr_reader :piece, :other_pieces, :jump_directions
 
-  def valid_move?(position)
-    inbound?(position) && no_piece_at?(position)
-  end
-
-  def next_jump(position, direction)
-    [position[0] + direction[0], position[1] + direction[1]]
-  end
-
   def inbound?(position)
     position[0].between?(0, 7) && position[1].between?(0, 7)
   end
 
   def no_piece_at?(position)
     other_pieces.none? { |other_piece| other_piece.position == position }
+  end
+
+  def valid_move?(position)
+    inbound?(position) && no_piece_at?(position)
+  end
+
+  def next_jump(position, direction)
+    [position[0] + direction[0], position[1] + direction[1]]
   end
 
   def piece_at(position)
@@ -39,5 +39,9 @@ class Generator
     other_piece = piece_at(position)
 
     other_piece.player != piece.player
+  end
+
+  def capture?(position)
+    inbound?(position) && piece_at(position) && other_player_is_at?(position)
   end
 end

@@ -3,6 +3,8 @@
 require_relative '../../lib/chess_pieces/knight'
 require_relative '../shared/among_chess_pieces'
 
+# rubocop: disable all
+
 RSpec.describe Knight do
   include_context 'list_of_pieces'
 
@@ -12,6 +14,7 @@ RSpec.describe Knight do
   end
 
   describe '#moves' do
+
     context 'when not in a position to move' do
       subject(:knight) { described_class.new(:black, [5, 3]) }
 
@@ -21,6 +24,7 @@ RSpec.describe Knight do
         allow(pieces[23]).to receive(:position).and_return([3, 2])
         allow(pieces[22]).to receive(:position).and_return([4, 5])
         allow(pieces[31]).to receive(:position).and_return([3, 4])
+
 
         other_pieces = pieces.reject.with_index { |_piece, index| index == 25 }
 
@@ -38,7 +42,12 @@ RSpec.describe Knight do
 
         list_of_moves = knight.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([2, 0], [2, 2])
+        expected_moves = [
+          { type: :standard, piece: knight, ending_position: [2, 0] },
+          { type: :standard, piece: knight, ending_position: [2, 2] }
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -47,13 +56,23 @@ RSpec.describe Knight do
 
       it 'returns all valid moves/captures' do
         # Setup a pawn to be capturable by the knight
-        allow(pieces[11]).to receive(:position).and_return([2, 3])
+        enemy_piece = pieces[11]
+        allow(enemy_piece).to receive(:position).and_return([2, 3])
 
         other_pieces = pieces.reject.with_index { |_piece, index| index == 30 }
 
         list_of_moves = knight.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([2, 5], [3, 6], [5, 6], [5, 2], [3, 2], [2, 3])
+        expected_moves = [
+          { type: :capture, piece: knight, captured_piece: enemy_piece, ending_position: [2, 3] },
+          { type: :standard, piece: knight, ending_position: [2, 5] },
+          { type: :standard, piece: knight, ending_position: [3, 6] },
+          { type: :standard, piece: knight, ending_position: [5, 6] },
+          { type: :standard, piece: knight, ending_position: [5, 2] },
+          { type: :standard, piece: knight, ending_position: [3, 2] },
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
   end

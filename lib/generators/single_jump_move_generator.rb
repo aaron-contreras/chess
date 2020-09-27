@@ -11,15 +11,22 @@ class SingleJumpMoveGenerator < Generator
 
   def generate_moves
     jump_directions.map do |direction|
-      movable_locations(direction)
+      valid_moves(direction)
     end.compact
   end
 
   private
 
-  def movable_locations(direction)
-    hypothetical_position = next_jump(piece.position, direction)
+  # These pieces jump and (coincidentally) capture in their single jump per direction
+  def valid_moves(direction)
+    jump = next_jump(piece.position, direction)
 
-    hypothetical_position if valid_position?(hypothetical_position)
+    if valid_move?(jump)
+      { type: :standard, piece: piece, ending_position: jump }
+    elsif capture?(jump)
+      enemy_piece = piece_at(jump)
+
+      { type: :capture, piece: piece, captured_piece: enemy_piece, ending_position: jump }
+    end
   end
 end

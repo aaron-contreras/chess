@@ -38,10 +38,6 @@ class StandardMoveGenerator < Generator
     moves_in_direction
   end
 
-  def capture?(position)
-    position && inbound?(position) && piece_at(position) && other_player_is_at?(position)
-  end
-
   def next_jump_captures?(moves, direction)
     return if moves.empty?
 

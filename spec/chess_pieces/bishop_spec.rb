@@ -70,6 +70,7 @@ RSpec.describe Bishop do
           { type: :standard, piece: bishop, ending_position: [5, 3] },
         ]
 
+
         expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end

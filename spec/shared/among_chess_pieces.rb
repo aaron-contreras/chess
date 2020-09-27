@@ -43,6 +43,7 @@ RSpec.shared_context 'list_of_pieces' do
       double('Black King', player: :black, position: [7, 4]),
       double('Black Right Bishop', player: :black, position: [7, 5]),
       double('Black Right Knight', player: :black, position: [7, 6]),
+      double('Black Right Rook', player: :black, position: [7, 7])
     ]
   end
 
