@@ -5,12 +5,10 @@
 class PieceManager
   attr_reader :white_pieces, :black_pieces, :white_captures, :black_captures, :all_pieces
 
-  def initialize(white_pieces, black_pieces)
-    @white_pieces = white_pieces
-    @black_pieces = black_pieces
+  def initialize(all_pieces)
+    @all_pieces = all_pieces
     @white_captures = []
     @black_captures = []
-    @all_pieces = white_pieces + black_pieces
   end
 
   def update_piece_set(move)

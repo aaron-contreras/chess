@@ -1,33 +1,62 @@
 # frozen_string_literal: true
 
+require_relative './piece_finder'
+require_relative './piece_manager'
+
+# Detects whether game rules such as "check", "checkmate", or "stalemate" are in place.
 class GameRuleVerifier
-  def initialize(king, friendly_pieces, enemy_pieces)
+  def initialize(king, all_pieces)
     @king = king
-    @friendly_pieces = friendly_pieces
-    @enemy_pieces = enemy_pieces
-    @all_pieces = friendly_pieces + enemy_pieces
+    @player = king.player
+    @all_pieces = all_pieces
   end
 
-  def check?
+  def check?(all_pieces)
+    enemy_moves = enemy_moves(all_pieces)
+
     enemy_moves.any? do |piece_moves|
       piece_moves.map do |move|
         move[:captured_piece]
       end.include?(king)
     end
   end
-  
-  private
 
-  attr_reader :king, :friendly_pieces, :enemy_pieces, :all_pieces
+  def checkmate?(all_pieces)
+    finder = PieceFinder.new(all_pieces)
+    friendly_pieces = finder.friendly_pieces(player)
 
-  def other_pieces(piece)
-    all_pieces.reject { |piece_from_set| piece_from_set == piece }
+    moves(friendly_pieces).all? { |move| end_up_in_check?(move) }
   end
 
-  def enemy_moves
+  private
+
+  attr_reader :king, :player, :all_pieces
+
+  def moves(pieces)
+    finder = PieceFinder.new(all_pieces)
+
+    pieces.map do |piece|
+      other_pieces = finder.other_pieces(piece)
+      piece.moves(other_pieces)
+    end.flatten
+  end
+
+  def end_up_in_check?(move)
+    manager = PieceManager.new(all_pieces)
+
+    future_pieces = manager.update_piece_set(move)
+
+    check?(future_pieces)
+  end
+
+  def enemy_moves(all_pieces)
+    finder = PieceFinder.new(all_pieces)
+
+    enemy_pieces = finder.enemy_pieces(player)
+
     enemy_pieces.map do |piece|
-      others = other_pieces(piece)
-      piece.moves(others)
+      other_pieces = finder.other_pieces(piece)
+      piece.moves(other_pieces)
     end
   end
 end
