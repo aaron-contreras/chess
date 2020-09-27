@@ -25,6 +25,7 @@ RSpec.describe King do
       end
     end
 
+
     context 'when in a position able to move but not capture' do
       subject(:king) { described_class.new(:black, [4, 4])}
 
@@ -33,7 +34,18 @@ RSpec.describe King do
 
         list_of_moves = king.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([3, 4], [3, 5], [4, 5], [5, 5], [5, 4], [5, 3], [4, 3], [3, 3])
+        expected_moves = [
+          { type: :standard, piece: king, ending_position: [3, 4] },
+          { type: :standard, piece: king, ending_position: [3, 5] },
+          { type: :standard, piece: king, ending_position: [4, 5] },
+          { type: :standard, piece: king, ending_position: [5, 5] },
+          { type: :standard, piece: king, ending_position: [5, 4] },
+          { type: :standard, piece: king, ending_position: [5, 3] },
+          { type: :standard, piece: king, ending_position: [4, 3] },
+          { type: :standard, piece: king, ending_position: [3, 3] }
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -42,13 +54,22 @@ RSpec.describe King do
 
       it 'returns an array with all valid moves/caputres' do
         # Place a black pawn in a capturable position
+        enemy_piece = pieces[16]
         allow(pieces[16]).to receive(:position).and_return([3, 4])
 
         other_pieces = pieces.reject.with_index { |_piece, index| index == 4 }
 
         list_of_moves = king.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([2, 5], [3, 5], [3, 4], [3, 3], [2, 3])
+        expected_moves = [
+          { type: :capture, piece: king, captured_piece: enemy_piece, ending_position: [3, 4] },
+          { type: :standard, piece: king, ending_position: [2, 5] },
+          { type: :standard, piece: king, ending_position: [3, 5] },
+          { type: :standard, piece: king, ending_position: [3, 3] },
+          { type: :standard, piece: king, ending_position: [2, 3] },
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -62,7 +83,12 @@ RSpec.describe King do
 
         list_of_moves = king.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([0, 3], a_kind_of(Moves::Castling))
+        expected_moves = [
+          { type: :castling, king: king, rook: long_side_rook, king_ending_position: [0, 2], rook_ending_position: [0, 3] },
+          { type: :standard, piece: king, ending_position: [0, 3] }
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -77,7 +103,12 @@ RSpec.describe King do
 
         list_of_moves = king.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([7, 5], a_kind_of(Moves::Castling))
+        expected_moves = [
+          { type: :castling, king: king, rook: short_side_rook, king_ending_position: [7, 6], rook_ending_position: [7, 5] },
+          { type: :standard, piece: king, ending_position: [7, 5] }
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
   end

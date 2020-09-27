@@ -8,28 +8,43 @@ class CastlingGenerator
   def initialize(king, other_pieces)
     @king = king
     @other_pieces = other_pieces
+    @king_rank = king.position[0]
   end
 
   def generate_castling
     castling_moves = []
 
-    castling_moves << Moves::Castling.new(:short_side, king, short_side_rook) if valid_castle?(:short_side)
+    castling_moves << build_castling_move(:short_side) if valid_castle?(:short_side)
 
-    castling_moves << Moves::Castling.new(:long_side, king, long_side_rook) if valid_castle?(:long_side)
+    castling_moves << build_castling_move(:long_side) if valid_castle?(:long_side)
 
     castling_moves
   end
 
   private
 
-  attr_reader :king, :other_pieces
+  attr_reader :king, :other_pieces, :king_rank
+
+  def build_castling_move(style)
+    rook = rook_getter(style)
+
+    if style == :long_side
+      king_ending_position = [king_rank, 2]
+      rook_ending_position = [king_rank, 3]
+    else
+      king_ending_position = [king_rank, 6]
+      rook_ending_position = [king_rank, 5]
+    end
+
+    { type: :castling, king: king, rook: rook, king_ending_position: king_ending_position, rook_ending_position: rook_ending_position }
+  end
 
   def same_player?(piece)
     king.player == piece.player
   end
 
   def same_rank?(piece)
-    king.position[0] == piece.position[0]
+    king_rank == piece.position[0]
   end
 
   def castleable_rook?(piece, side)
@@ -57,8 +72,8 @@ class CastlingGenerator
 
   # Squares that must be empty in order to castle
   def blockers(style)
-    rank = 3.times.map { king.position[0] }
-    rank.zip(GConst::BLOCKER_FILES[style])
+    ranks = 3.times.map { king_rank }
+    ranks.zip(GConst::BLOCKER_FILES[style])
   end
 
   # No pieces between a king and a given rook
