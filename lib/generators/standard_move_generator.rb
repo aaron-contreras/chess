@@ -38,18 +38,8 @@ class StandardMoveGenerator < Generator
     moves_in_direction
   end
 
-  def captures
-    jump_directions.map do |direction|
-      moves = valid_moves(direction)
-
-      next unless next_jump_captures?(moves, direction)
-
-      ending_position = next_jump(moves.last[:ending_position], direction)
-
-      captured_piece = piece_at(ending_position)
-
-      { type: :capture, piece: piece, captured_piece: captured_piece, ending_position: ending_position }
-    end.compact
+  def capture?(position)
+    position && inbound?(position) && piece_at(position) && other_player_is_at?(position)
   end
 
   def next_jump_captures?(moves, direction)
@@ -62,7 +52,17 @@ class StandardMoveGenerator < Generator
     capture?(jump)
   end
 
-  def capture?(position)
-    position && inbound?(position) && piece_at(position) && other_player_is_at?(position)
+  def captures
+    jump_directions.map do |direction|
+      moves = valid_moves(direction)
+
+      next unless next_jump_captures?(moves, direction)
+
+      ending_position = next_jump(moves.last[:ending_position], direction)
+
+      captured_piece = piece_at(ending_position)
+
+      { type: :capture, piece: piece, captured_piece: captured_piece, ending_position: ending_position }
+    end.compact
   end
 end
