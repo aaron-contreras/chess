@@ -3,7 +3,7 @@
 # In charge of updating pieces after every move, keeping track of which
 # player has which pieces
 class PieceManager
-  attr_reader :white_pieces, :black_pieces, :white_captures, :black_captures, :all_pieces
+  attr_reader :all_pieces, :white_captures, :black_captures
 
   def initialize(all_pieces)
     @all_pieces = all_pieces

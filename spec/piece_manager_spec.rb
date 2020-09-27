@@ -7,7 +7,7 @@ require_relative './shared/among_chess_pieces'
 RSpec.describe PieceManager do
   include_context 'list_of_pieces'
 
-  subject(:manager) { described_class.new(white_pieces, black_pieces) }
+  subject(:manager) { described_class.new(pieces) }
 
   describe '#update_piece_set' do
     context 'when given a "standard" non-capturing move' do
