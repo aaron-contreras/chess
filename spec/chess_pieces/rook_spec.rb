@@ -57,7 +57,7 @@ RSpec.describe Rook do
 
     context 'when in a position to move in all directions' do
       subject(:rook) { described_class.new(:black, [4, 1]) }
-      # FIX TEST
+
       it 'returns an array with all valid moves/captures' do
         captured_enemy_top = pieces[9]
         captured_enemy_right = pieces[14]
@@ -72,10 +72,9 @@ RSpec.describe Rook do
           { type: :capture, piece: rook, captured_piece: captured_enemy_right, ending_position: [4, 5] }, 
           { type: :standard, piece: rook, ending_position: [3, 1] },
           { type: :standard, piece: rook, ending_position: [2, 1] },
-          { type: :capture, piece: rook, caputred_enemy: captured_enemy_top, ending_position: [1, 1] },
+          { type: :capture, piece: rook, captured_piece: captured_enemy_top, ending_position: [1, 1] },
           { type: :standard, piece: rook, ending_position: [4, 2] },
           { type: :standard, piece: rook, ending_position: [4, 3] },
-          { type: :standard, piece: rook, ending_position: [2, 3] },
           { type: :standard, piece: rook, ending_position: [4, 4] },
           { type: :standard, piece: rook, ending_position: [5, 1] },
           { type: :standard, piece: rook, ending_position: [4, 0] }
