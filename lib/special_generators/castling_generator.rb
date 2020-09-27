@@ -59,17 +59,6 @@ class CastlingGenerator
     other_pieces.find { |piece| castleable_rook?(piece, GConst::LONG_SIDE_FILE) }
   end
 
-  # Determine whether a rook is considered to be in the 'long' or 'short' side
-  # of the board.
-
-  def rook_side(rook)
-    if rook.position[1].zero?
-      :long_side
-    else
-      :short_side
-    end
-  end
-
   # Squares that must be empty in order to castle
   def blockers(style)
     ranks = 3.times.map { king_rank }
@@ -77,8 +66,7 @@ class CastlingGenerator
   end
 
   # No pieces between a king and a given rook
-  def path_is_cleared?(rook)
-    style = rook_side(rook)
+  def path_is_cleared?(style)
     blocking_positions = blockers(style)
 
     other_pieces.none? { |piece| blocking_positions.include?(piece.position) }
@@ -96,6 +84,6 @@ class CastlingGenerator
   def valid_castle?(style)
     rook = rook_getter(style)
 
-    king.moved == false && rook && path_is_cleared?(rook)
+    king.moved == false && rook && path_is_cleared?(style)
   end
 end
