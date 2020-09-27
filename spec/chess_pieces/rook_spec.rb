@@ -68,6 +68,7 @@ RSpec.describe Rook do
 
         list_of_moves = rook.moves(other_pieces)
 
+
         expected_moves = [
           { type: :capture, piece: rook, captured_piece: captured_enemy_right, ending_position: [4, 5] }, 
           { type: :standard, piece: rook, ending_position: [3, 1] },

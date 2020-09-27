@@ -10,9 +10,17 @@ RSpec.describe King do
   describe '#to_s' do
     include_examples 'piece_display', described_class.new(:white, [0, 4])
     include_examples 'piece_display', described_class.new(:black, [7, 4])
+
   end
+  
 
   describe '#moves' do
+    before do
+      other_pieces = pieces.reject { |piece| piece == king }
+      other_pieces.each do |piece|
+        allow(piece).to receive(:moves).and_return([])
+      end
+    end
     context 'when not in a position to move' do
       subject(:king) { described_class.new(:white, [0, 4])}
 
@@ -67,6 +75,28 @@ RSpec.describe King do
           { type: :standard, piece: king, ending_position: [3, 5] },
           { type: :standard, piece: king, ending_position: [3, 3] },
           { type: :standard, piece: king, ending_position: [2, 3] },
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
+      end
+    end
+
+    context 'when an enemy piece can move to the path between king and rook' do
+      subject(:king) { described_class.new(:white, [0, 4]) }
+      
+      it "can't castle" do
+        allow(black_pieces[0]).to receive(:moves).and_return(
+          [ { type: :standard, piece: black_pieces[0], ending_position: [0, 3]} ]
+        )
+
+        other_pieces = pieces.reject.with_index { |piece, index| (1..4).include?(index) || (17..31).include?(index) }
+
+        long_side_rook = white_pieces[0]
+
+        list_of_moves = king.moves(other_pieces)
+
+        expected_moves = [
+          { type: :standard, piece: king, ending_position: [0, 3] }
         ]
 
         expect(list_of_moves).to contain_exactly(*expected_moves)

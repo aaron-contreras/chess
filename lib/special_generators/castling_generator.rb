@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require_relative '../moves'
 require_relative '../game_constants'
+require_relative '../piece_finder'
 
 # Generates valid castling moves between a king and its rooks
 class CastlingGenerator
@@ -72,6 +72,20 @@ class CastlingGenerator
     other_pieces.none? { |piece| blocking_positions.include?(piece.position) }
   end
 
+  # TODO REFACTOR EXTRA CONSTRAINT FOR CASTLING
+  def no_enemies_can_move_to_path?(style)
+    blocking_positions = blockers(style)
+
+    finder = PieceFinder.new(other_pieces)
+
+    enemy_pieces = finder.enemy_pieces(king.player)
+
+    enemy_pieces.map do |piece|
+      other_pieces = finder.other_pieces(piece)
+      piece.moves(other_pieces)
+    end.flatten.none? { |move| blocking_positions.include?(move[:ending_position]) }
+  end
+
   # Gets the rook in given file
   def rook_getter(style)
     if style == :short_side
@@ -84,6 +98,6 @@ class CastlingGenerator
   def valid_castle?(style)
     rook = rook_getter(style)
 
-    king.moved == false && rook && path_is_cleared?(style)
+    king.moved == false && rook && path_is_cleared?(style) && no_enemies_can_move_to_path?(style)
   end
 end
