@@ -30,11 +30,23 @@ RSpec.describe Bishop do
       subject(:bishop) { described_class.new(:black, [5, 3]) }
 
       it 'returns an array with all valid moves/captures' do
+        captured_enemy_pawn = pieces[15]
+
         other_pieces = pieces.reject.with_index { |_piece, index| index == 27 }        
 
         list_of_moves = bishop.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([4, 2], [3, 1], [2, 0], [4, 4], [3, 5], [2, 6], [1, 7])
+        expected_moves = [
+          { type: :capture, piece: bishop, captured_piece: captured_enemy_pawn, ending_position: [1, 7] }, 
+          { type: :standard, piece: bishop, ending_position: [4, 2] },
+          { type: :standard, piece: bishop, ending_position: [3, 1] },
+          { type: :standard, piece: bishop, ending_position: [2, 0] },
+          { type: :standard, piece: bishop, ending_position: [4, 4] },
+          { type: :standard, piece: bishop, ending_position: [3, 5] },
+          { type: :standard, piece: bishop, ending_position: [2, 6] },
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
 
@@ -42,11 +54,23 @@ RSpec.describe Bishop do
       subject(:bishop) { described_class.new(:white, [3, 5]) }
 
       it 'returns an array with all valid moves/captures' do
+        captured_enemy_pawn = pieces[18]
+
         other_pieces = pieces.reject.with_index { |_piece, index| index == 5 }
 
         list_of_moves = bishop.moves(other_pieces)
 
-        expect(list_of_moves).to contain_exactly([2, 4], [2, 6], [4, 6], [5, 7], [4, 4], [5, 3], [6, 2])
+        expected_moves = [
+          { type: :capture, piece: bishop, captured_piece: captured_enemy_pawn, ending_position: [6, 2] },
+          { type: :standard, piece: bishop, ending_position: [2, 4] },
+          { type: :standard, piece: bishop, ending_position: [2, 6] },
+          { type: :standard, piece: bishop, ending_position: [4, 6] },
+          { type: :standard, piece: bishop, ending_position: [5, 7] },
+          { type: :standard, piece: bishop, ending_position: [4, 4] },
+          { type: :standard, piece: bishop, ending_position: [5, 3] },
+        ]
+
+        expect(list_of_moves).to contain_exactly(*expected_moves)
       end
     end
   end
