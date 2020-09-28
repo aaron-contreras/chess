@@ -31,8 +31,6 @@ class GameRuleVerifier
   end
 
   def stalemate?(player_moves)
-    require 'pry'
-    binding.pry
     player_moves.empty? && check?(all_pieces) == false
   end
 
