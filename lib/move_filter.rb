@@ -15,24 +15,20 @@ class MoveFilter
   end
 
   def filter_out
-    # reject all moves that will put the king in check after the move is made
     friendly_pieces = finder.friendly_pieces(player)
-    enemy_pieces = finder.enemy_pieces(player)
     
     friendly_moves = moves(friendly_pieces)
 
-    enemy_moves = moves(enemy_pieces)
-
+    # reject all castles when the king is already in check
     if verifier.check?(all_pieces)
       friendly_moves = friendly_moves.reject { |move| move[:type] == :castling }
     end
 
+    # reject all moves that will put the king in check after the move is made
     friendly_moves.reject do |move|
       future_pieces = manager.update_piece_set(move)
       verifier.check?(future_pieces)
     end
-    # reject all castles when the king is already in check
-
   end
 
   private
