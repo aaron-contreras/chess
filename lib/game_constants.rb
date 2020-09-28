@@ -14,6 +14,21 @@ module GameConstants
     }
   }.freeze
 
+  # Dark brown/khaki
+  SQUARE_COLOR = {
+    dark: [168, 119, 89],
+    light: [230, 204, 170]
+  }.freeze
+
+  RANKS = 8
+  FILES = 8
+
+  EVEN_RANK = %i[light dark light dark light dark light dark].freeze
+
+  ODD_RANK = EVEN_RANK.rotate
+
+  EMPTY_SQUARE = ''
+
   # CASTLING
   LONG_SIDE_FILE = 0
   SHORT_SIDE_FILE = 7
