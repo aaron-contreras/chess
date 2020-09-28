@@ -108,5 +108,42 @@ RSpec.describe GameRuleVerifier do
       end
     end
   end
+
+  describe '#stalemate?' do
+    let(:king) { white_pieces[4] }
+    let(:enemy_pieces) { black_pieces.first(2) }
+    let(:all_pieces) { enemy_pieces + [king] }
+
+    context 'when in stalemate' do
+      before do
+        allow(enemy_pieces[0]).to receive(:moves).and_return(
+          [],
+          [ { type: :capture, piece: enemy_pieces[0], captured_piece: king, ending_position: king.position }]
+        )
+        allow(enemy_pieces[1]).to receive(:moves).and_return(
+          [],
+          [ { type: :capture, piece: enemy_pieces[1], captured_piece: king, ending_position: king.position}]
+        )
+
+        allow(king).to receive(:moves).and_return([])
+      end
+
+      it 'returns true' do
+        expect(verifier.stalemate?(king.moves)).to eq(true)
+      end
+
+      context 'when not in stalemate' do
+        before do
+          allow(king).to receive(:moves).and_return([
+            { type: :standard, piece: king, ending_position: [7, 5] }
+          ])
+        end
+
+        it 'returns false' do
+          expect(verifier.stalemate?(king.moves)).to eq(false)
+        end
+      end
+    end
+  end
 end
 # rubocop: enable all

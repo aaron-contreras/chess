@@ -27,7 +27,13 @@ class GameRuleVerifier
   end
 
   def checkmate?(player_moves)
-    player_moves.empty?
+    player_moves.empty? && check?(all_pieces)
+  end
+
+  def stalemate?(player_moves)
+    require 'pry'
+    binding.pry
+    player_moves.empty? && check?(all_pieces) == false
   end
 
   private
