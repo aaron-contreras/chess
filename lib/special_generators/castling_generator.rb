@@ -72,7 +72,7 @@ class CastlingGenerator
     other_pieces.none? { |piece| blocking_positions.include?(piece.position) }
   end
 
-  # TODO REFACTOR EXTRA CONSTRAINT FOR CASTLING
+  # TODO: REFACTOR EXTRA CONSTRAINT FOR CASTLING
   def no_enemies_can_move_to_path?(style)
     blocking_positions = blockers(style)
 
@@ -80,10 +80,12 @@ class CastlingGenerator
 
     enemy_pieces = finder.enemy_pieces(king.player)
 
-    enemy_pieces.map do |piece|
+    enemy_moves = enemy_pieces.map do |piece|
       other_pieces = finder.other_pieces(piece)
       piece.moves(other_pieces)
-    end.flatten.none? { |move| blocking_positions.include?(move[:ending_position]) }
+    end.flatten
+
+    enemy_moves.none? { |move| blocking_positions.include?(move[:ending_position]) }
   end
 
   # Gets the rook in given file

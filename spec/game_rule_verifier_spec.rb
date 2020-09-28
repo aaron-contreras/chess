@@ -80,15 +80,16 @@ RSpec.describe GameRuleVerifier do
     end
 
     context 'when king can get out of check' do
-      before do
-        # Stub behavior for a friendly piece to get the king out of check
-
-        allow(friendly_pieces[0]).to receive(:moves).and_return(
-        [ { type: :capture, piece: friendly_pieces[0], captured_piece: enemy_pieces[0], ending_position: enemy_pieces[0].position }]
-      )
-      end
-
       it 'returns false' do
+        allow(friendly_pieces[0]).to receive(:moves).and_return([
+          { type: :capture,
+          piece: friendly_pieces[0],
+          captured_piece: enemy_pieces[0],
+          ending_position: enemy_pieces[0].position
+          }
+        ])
+
+        player_moves = friendly_pieces.map(&:moves)
         checkmate_state = verifier.checkmate?(all_pieces)
 
         expect(checkmate_state).to eq(false)
@@ -97,11 +98,11 @@ RSpec.describe GameRuleVerifier do
 
     context "when king can't get out of check" do
       it 'returns true' do
-        allow(friendly_pieces[0]).to receive(:moves).and_return(
-          [ { type: :standard, piece: friendly_pieces[0], ending_position: [5, 0]} ]
-        )
+        allow(friendly_pieces[0]).to receive(:moves).and_return([])
 
-        checkmate_state = verifier.checkmate?(all_pieces)
+        player_moves = friendly_pieces.map(&:moves).reject(&:empty?)
+
+        checkmate_state = verifier.checkmate?(player_moves)
 
         expect(checkmate_state).to eq(true)
       end

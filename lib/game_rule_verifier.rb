@@ -21,33 +21,34 @@ class GameRuleVerifier
     end
   end
 
-  def checkmate?(all_pieces)
-    finder = PieceFinder.new(all_pieces)
-    friendly_pieces = finder.friendly_pieces(player)
+  def checkv2?(enemy_moves)
+    enemy_moves.any? { |move| move[:ending_position].include?(king) }
+  end
 
-    moves(friendly_pieces).all? { |move| end_up_in_check?(move) }
+  def checkmate?(player_moves)
+    player_moves.empty?
   end
 
   private
 
   attr_reader :king, :player, :all_pieces
 
-  def moves(pieces)
-    finder = PieceFinder.new(all_pieces)
+  # def moves(pieces)
+  #   finder = PieceFinder.new(all_pieces)
 
-    pieces.map do |piece|
-      other_pieces = finder.other_pieces(piece)
-      piece.moves(other_pieces)
-    end.flatten
-  end
+  #   pieces.map do |piece|
+  #     other_pieces = finder.other_pieces(piece)
+  #     piece.moves(other_pieces)
+  #   end.flatten
+  # end
 
-  def end_up_in_check?(move)
-    manager = PieceManager.new(all_pieces)
+  # def end_up_in_check?(move)
+  #   manager = PieceManager.new(all_pieces)
 
-    future_pieces = manager.update_piece_set(move)
+  #   future_pieces = manager.update_piece_set(move)
 
-    check?(future_pieces)
-  end
+  #   check?(future_pieces)
+  # end
 
   def enemy_moves(all_pieces)
     finder = PieceFinder.new(all_pieces)
