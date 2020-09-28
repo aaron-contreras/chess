@@ -9,20 +9,21 @@ class GameRuleVerifier
     @king = king
     @player = king.player
     @all_pieces = all_pieces
+    @finder = PieceFinder.new(all_pieces)
   end
 
   def check?(all_pieces)
     enemy_moves = enemy_moves(all_pieces)
 
     enemy_moves.any? do |piece_moves|
-      piece_moves.map do |move|
+      result = piece_moves.map do |move|
         move[:captured_piece]
       end.include?(king)
     end
   end
 
   def checkv2?(enemy_moves)
-    enemy_moves.any? { |move| move[:ending_position].include?(king) }
+    enemy_moves.any? { |move| move[:captured_piece] == king }
   end
 
   def checkmate?(player_moves)
@@ -31,7 +32,7 @@ class GameRuleVerifier
 
   private
 
-  attr_reader :king, :player, :all_pieces
+  attr_reader :king, :player, :all_pieces, :finder
 
   # def moves(pieces)
   #   finder = PieceFinder.new(all_pieces)

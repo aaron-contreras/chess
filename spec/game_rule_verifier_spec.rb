@@ -11,7 +11,7 @@ RSpec.describe GameRuleVerifier do
 
   describe '#check?' do
     let(:king) { pieces[4] }
-    let(:friendly_pieces) { white_pieces.first(3) }
+    let(:friendly_pieces) { white_pieces.first(3) + [king] }
     let(:enemy_pieces) { black_pieces.first(3) }
     let(:all_pieces) { friendly_pieces + enemy_pieces }
 
