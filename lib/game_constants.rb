@@ -3,6 +3,8 @@
 # Game info and settings used all throughout
 module GameConstants
   # DISPLAY
+  PIECE_COLORS = { 'Black': :black, 'White': :white }.freeze
+
   UNICODE_PIECES = {
     black: {
       Rook: "\u265c", Knight: "\u265e", Bishop: "\u265d", Queen: "\u265b",
@@ -45,6 +47,9 @@ module GameConstants
   INDEX_TO_FILE = ('1'..'8').to_a
 
   PADDING_ROW = Array.new(8) { ' ' }
+
+  # Positions where pieces will be placed on the board at the start of a game
+  START_POSITIONS = (0..7).to_a.repeated_permutation(2).to_a.select { |rank, _file| [0, 1, 6, 7].include?(rank) }
 end
 
 # Alias for module
