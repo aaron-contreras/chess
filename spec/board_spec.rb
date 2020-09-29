@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../lib/chess_pieces/rook'
 require_relative '../lib/board'
 require_relative './shared/among_chess_pieces'
 
@@ -38,28 +37,28 @@ RSpec.describe Board do
       end
     end
   end
+  # Use this to verify printing
 
-  describe '#to_s' do
-    it 'prints a nicely formatted board' do
-      piece1 = Rook.new(:black, [0, 0])
-      piece2 = Rook.new(:white, [1, 0])
+  # require_relative '../lib/chess_pieces/rook'
+  # describe '#to_s' do
+  #   it 'prints a nicely formatted board' do
+  #     piece1 = Rook.new(:black, [0, 0])
+  #     piece2 = Rook.new(:white, [1, 0])
 
-      squares = [
-        8.times.map { piece1 },
-        8.times.map { piece1 },
-        [piece1, piece2] + 6.times.map { '' },
-        8.times.map { '' },
-        8.times.map { '' },
-        8.times.map { '' },
-        8.times.map { piece2 },
-        8.times.map { piece2 }
-      ]
+  #     squares = [
+  #       8.times.map { piece1 },
+  #       8.times.map { piece1 },
+  #       [piece1, piece2] + 6.times.map { '' },
+  #       8.times.map { '' },
+  #       8.times.map { '' },
+  #       8.times.map { '' },
+  #       8.times.map { piece2 },
+  #       8.times.map { piece2 }
+  #     ]
 
-      board.instance_variable_set(:@grid, squares)
+  #     board.instance_variable_set(:@grid, squares)
 
-      # Use this to verify
-      puts board.to_s
-
-    end
-  end
+  #     puts board.to_s
+  #   end
+  # end
 end
