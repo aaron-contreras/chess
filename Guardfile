@@ -68,3 +68,9 @@ guard :rspec, cmd: "bundle exec rspec" do
     Dir[File.join("**/#{m[1]}.feature")][0] || "spec/acceptance"
   end
 end
+
+guard :shell do
+  watch(//) do
+    `ruby ./chess_client.rb`
+  end
+end

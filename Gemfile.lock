@@ -21,6 +21,9 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    guard-shell (0.7.1)
+      guard (>= 2.0.0)
+      guard-compat (~> 1.0)
     kwalify (0.7.2)
     listen (3.2.1)
       rb-fsevent (~> 0.10, >= 0.10.3)
@@ -101,6 +104,7 @@ PLATFORMS
 DEPENDENCIES
   guard
   guard-rspec
+  guard-shell
   paint
   pry-byebug
   reek (~> 6.0, >= 6.0.1)

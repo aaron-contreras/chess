@@ -13,5 +13,6 @@ gem 'paint'
 group :development do
   gem 'guard'
   gem 'guard-rspec', require: false
+  gem 'guard-shell', require: false
   gem 'pry-byebug'
 end
