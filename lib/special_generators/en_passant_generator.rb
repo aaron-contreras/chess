@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../moves'
-
 # Generates valid 'En Passant' moves for a pawn
 class EnPassantGenerator
   def initialize(pawn, other_pieces, capture_directions)

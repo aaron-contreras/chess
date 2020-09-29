@@ -14,6 +14,7 @@ class Pawn < ChessPiece
     super(player, position)
     @double_jumped = false
     @moves_since_double_jump = 0
+    @starting_rank = position[0]
   end
 
   def moves(other_pieces)
@@ -26,6 +27,12 @@ class Pawn < ChessPiece
 
   def en_passant_capturable?
     double_jumped && moves_since_double_jump.zero?
+  end
+
+  def promotable?
+    rank = position[0]
+
+    @starting_rank == 1 && rank == 7 || @starting_rank == 6 && rank.zero?
   end
 
   private

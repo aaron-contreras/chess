@@ -4,7 +4,8 @@ require_relative '../game_constants'
 
 # Base class with common attributes and behavior for a chess piece
 class ChessPiece
-  attr_reader :player, :position, :moved
+  attr_reader :player
+  attr_accessor :position, :moved
 
   def initialize(player, position)
     @player = player
@@ -17,6 +18,10 @@ class ChessPiece
   end
 
   def en_passant_capturable?
+    false
+  end
+
+  def promotable?
     false
   end
 

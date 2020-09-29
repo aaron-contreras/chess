@@ -170,5 +170,26 @@ RSpec.describe Pawn do
       end
     end
   end
+
+  describe '#promotable?' do
+    context "when the pawn hasn't reached the other side" do
+      subject(:pawn) { described_class.new(:black, [6, 0]) }
+      it 'returns false' do
+        pawn.position = [3, 0]
+
+        expect(pawn).not_to be_promotable
+      end
+    end
+
+    context 'when the pawn has reached the other side' do
+      subject(:pawn) { described_class.new(:white, [1, 2]) }
+
+      it 'returns true' do
+        pawn.position = [7, 5]
+
+        expect(pawn).to be_promotable
+      end
+    end
+  end
 end
 # rubocop: enable all
