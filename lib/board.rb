@@ -4,10 +4,11 @@ require 'paint'
 
 # Displayable Chess Board
 class Board
-  attr_reader :grid
+  attr_reader :grid, :bottom_side_player
 
-  def initialize
+  def initialize(bottom_side_player)
     @grid = Array.new(8) { Array.new(8) { GameConstants::EMPTY_SQUARE } }
+    @bottom_side_player = bottom_side_player
   end
 
   def place(piece)
@@ -32,10 +33,10 @@ class Board
 
   def to_s
     <<~BOARD
+          #{(1..8).map(&:itself).join('    ')}  
       #{color_squares.each { |rank| puts rank }}
     BOARD
   end
-
 
   private
 
@@ -51,9 +52,9 @@ class Board
     grid.map do |rank|
       rank.map do |square|
         if square == GameConstants::EMPTY_SQUARE
-          '       '
+          ' '
         else
-          "   #{square}   "
+          square
         end
       end
     end
@@ -72,18 +73,36 @@ class Board
 
         Paint[square, nil, square_color]
       end.join
-      
+
       main_row = row.map.with_index do |square, file|
         square_color = GameConstants::SQUARE_COLOR[row_coloring[file]]
 
-        Paint[square, nil, square_color]
+        if square == ' '
+          piece_color = nil
+        else
+          piece_color = square.player.to_s
+        end
+
+        colored_square = Paint["  #{square}  ", piece_color, square_color]
       end.join
 
-      [padding, main_row, padding]
+      <<~RANK
+          #{padding}
+        #{alphabetical_ranks[rank]} #{main_row}
+          #{padding}
+      RANK
     end
   end
 
   def padding_row
-    Array.new(8) { '       ' }
+    Array.new(8) { '     ' }
+  end
+
+  def alphabetical_ranks
+    if bottom_side_player == :white
+      GameConstants::RANK_TO_LETTER.reverse
+    else
+      GameConstants::RANK_TO_LETTER
+    end
   end
 end

@@ -16,8 +16,8 @@ module GameConstants
 
   # Dark brown/khaki
   SQUARE_COLOR = {
-    dark: [168, 119, 89],
-    light: [230, 204, 170]
+    dark: '#AC7C5B',
+    light: '#EED3AE'
   }.freeze
 
   RANKS = 8
@@ -37,6 +37,8 @@ module GameConstants
     long_side: [1, 2, 3],
     short_side: [5, 6]
   }.freeze
+
+  RANK_TO_LETTER = ('a'..'h').to_a
 end
 
 # Alias for module
