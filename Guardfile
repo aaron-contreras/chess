@@ -70,7 +70,7 @@ guard :rspec, cmd: "bundle exec rspec" do
 end
 
 guard :shell do
-  watch(//) do
+  watch(//) do |modified_files|
     `ruby ./chess_client.rb`
   end
 end
