@@ -3,8 +3,9 @@
 require_relative '../lib/chess_pieces/rook'
 require_relative '../lib/board'
 require_relative './shared/among_chess_pieces'
+
 RSpec.describe Board do
-  subject(:board) { described_class.new(:white) }
+  subject(:board) { described_class.new(:black) }
   include_context 'list_of_pieces'
 
   describe '#place' do
@@ -57,7 +58,8 @@ RSpec.describe Board do
       board.instance_variable_set(:@grid, squares)
 
       # Use this to verify
-      # puts board.to_s
+      puts board.to_s
+
     end
   end
 end

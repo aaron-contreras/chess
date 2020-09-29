@@ -38,7 +38,13 @@ module GameConstants
     short_side: [5, 6]
   }.freeze
 
-  RANK_TO_LETTER = ('a'..'h').to_a
+  # Index to rank conversion
+  INDEX_TO_RANK = ('a'..'h').to_a
+
+  # Index to file conversion
+  INDEX_TO_FILE = ('1'..'8').to_a
+
+  PADDING_ROW = Array.new(8) { ' ' }
 end
 
 # Alias for module

@@ -23,18 +23,14 @@ class Board
     pieces.each { |piece| place(piece) }
   end
 
-  def rotate
-    
-  end
-
   def hold?(piece)
     grid.dig(*piece.position).empty? == false
   end
 
   def to_s
     <<~BOARD
-          #{(1..8).map(&:itself).join('    ')}  
       #{color_squares.join}
+          #{GameConstants::INDEX_TO_FILE.join('    ')}  
     BOARD
   end
 
@@ -48,7 +44,7 @@ class Board
     @grid = Array.new(8) { Array.new(8) { GameConstants::EMPTY_SQUARE } }
   end
 
-  def padded_squares
+  def equalized_width_squares
     grid.map do |rank|
       rank.map do |square|
         if square == GameConstants::EMPTY_SQUARE
@@ -61,30 +57,10 @@ class Board
   end
 
   def color_squares
-    padded_squares.map.with_index do |row, rank|
-      if rank.even?
-        row_coloring = GameConstants::EVEN_RANK
-      else
-        row_coloring = GameConstants::ODD_RANK
-      end
-
-      padding = padding_row.map.with_index do |square, file|
-        square_color = GameConstants::SQUARE_COLOR[row_coloring[file]]
-
-        Paint[square, nil, square_color]
-      end.join
-
-      main_row = row.map.with_index do |square, file|
-        square_color = GameConstants::SQUARE_COLOR[row_coloring[file]]
-
-        if square == ' '
-          piece_color = nil
-        else
-          piece_color = square.player.to_s
-        end
-
-        colored_square = Paint["  #{square}  ", piece_color, square_color]
-      end.join
+    equalized_width_squares.map.with_index do |row, rank|
+      row_colors = row_colors(rank)
+      padding = format_row(GameConstants::PADDING_ROW, row_colors)
+      main_row = format_row(row, row_colors)
 
       <<~RANK
           #{padding}
@@ -94,15 +70,33 @@ class Board
     end
   end
 
-  def padding_row
-    Array.new(8) { '     ' }
+  def row_colors(rank)
+    if rank.even?
+      GameConstants::EVEN_RANK
+    else
+      GameConstants::ODD_RANK
+    end
+  end
+
+  def format_row(row, row_colors)
+    row.map.with_index do |square, file|
+      square_color = GameConstants::SQUARE_COLOR[row_colors[file]]
+
+      foreground_color = foreground_color(square)
+
+      Paint["  #{square}  ", :bold, foreground_color, square_color]
+    end.join
+  end
+
+  def foreground_color(square)
+    square.player.to_s unless square == ' '
   end
 
   def alphabetical_ranks
     if bottom_side_player == :white
-      GameConstants::RANK_TO_LETTER.reverse
+      GameConstants::INDEX_TO_RANK.reverse
     else
-      GameConstants::RANK_TO_LETTER
+      GameConstants::INDEX_TO_RANK
     end
   end
 end
