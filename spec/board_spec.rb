@@ -11,7 +11,7 @@ RSpec.describe Board do
     it 'places the piece on its spot in the board' do
       position = [1, 0]
 
-      piece = pieces.find { |piece| piece.position == position }
+      piece = pieces.find { |a_piece| a_piece.position == position }
 
       board.place(piece)
 
@@ -56,9 +56,8 @@ RSpec.describe Board do
 
       board.instance_variable_set(:@grid, squares)
 
-      puts board
-      require 'pry'
-      binding.pry
+      # Use this to verify
+      # puts board.to_s
     end
   end
 end

@@ -34,7 +34,7 @@ class Board
   def to_s
     <<~BOARD
           #{(1..8).map(&:itself).join('    ')}  
-      #{color_squares.each { |rank| puts rank }}
+      #{color_squares.join}
     BOARD
   end
 
