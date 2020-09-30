@@ -36,6 +36,16 @@ class Board
 
   private
 
+  # To simulate a more realistic gameplay, you always play on the side closest
+  # to the bottom of the screen.
+  def rotated_board
+    if bottom_side_player == :white
+      grid.reverse
+    else
+      grid
+    end
+  end
+
   def build_grid
     Array.new(8) { Array.new(8) { GameConstants::EMPTY_SQUARE } }
   end
@@ -45,7 +55,7 @@ class Board
   end
 
   def equalized_width_squares
-    grid.map do |rank|
+    rotated_board.map do |rank|
       rank.map do |square|
         if square == GameConstants::EMPTY_SQUARE
           ' '

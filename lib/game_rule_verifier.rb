@@ -16,7 +16,7 @@ class GameRuleVerifier
     enemy_moves = enemy_moves(all_pieces)
 
     enemy_moves.any? do |piece_moves|
-      result = piece_moves.map do |move|
+      piece_moves.map do |move|
         move[:captured_piece]
       end.include?(king)
     end

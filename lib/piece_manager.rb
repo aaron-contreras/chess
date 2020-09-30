@@ -21,13 +21,30 @@ class PieceManager
       capture(move[:captured_piece])
     end
 
+    mark_as_moved(moved_pieces(move))
+
     all_pieces
   end
 
   private
 
   def move_piece(move)
-    move[:piece].position = move[:ending_position]
+    all_pieces.find { |piece| piece.position == move[:piece].position }.position = move[:ending_position]
+    # move[:piece].position = move[:ending_position]
+  end
+
+  def moved_pieces(move)
+    if move[:type] == :castling
+      [move[:king], move[:rook]]
+    else
+      [move[:piece]]
+    end
+  end
+
+  def mark_as_moved(pieces)
+    pieces.each do |piece|
+      piece.moved = true
+    end
   end
 
   def castle(move)
