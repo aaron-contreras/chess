@@ -82,4 +82,8 @@ board.update(updated_piece_set)
 
 puts board
 
-pp updated_piece_set.select(&:moved?)
+# Update moves since a pawn double jumped
+# Could be refactored into the pawn class
+updated_piece_set.select(&:double_jumped).each do |pawn|
+  pawn.moves_since_double_jump += 1
+end

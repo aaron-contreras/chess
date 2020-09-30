@@ -5,9 +5,10 @@ require_relative '../game_constants'
 # Base class with common attributes and behavior for a chess piece
 class ChessPiece
   attr_reader :player, :starting_position
-  attr_accessor :position, :moved
+  attr_accessor :position, :moved, :double_jumped
 
   def initialize(player, position)
+    @double_jumped = false
     @player = player
     @position = position
     @starting_position = position

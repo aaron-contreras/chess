@@ -14,6 +14,7 @@ class PieceManager
   def update_piece_set(move)
     if move[:type] == :standard
       move_piece(move)
+      update_double_jump_counter(move)
     elsif move[:type] == :castling
       castle(move)
     elsif %i[capture en_passant].include?(move[:type])
@@ -25,6 +26,14 @@ class PieceManager
   end
 
   private
+
+  def update_double_jump_counter(move)
+    if move[:double_jump]
+      moved_piece = all_pieces.find { |piece| piece.position == move[:ending_position] }
+
+      moved_piece.double_jumped = true
+    end
+  end
 
   def move_piece(move)
     all_pieces.find { |piece| piece.position == move[:piece].position }.position = move[:ending_position]

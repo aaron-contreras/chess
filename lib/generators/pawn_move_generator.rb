@@ -21,7 +21,9 @@ class PawnMoveGenerator < Generator
     jump_directions.map do |direction|
       jump = next_jump(piece.position, direction)
 
-      { type: :standard, piece: piece, ending_position: jump } if valid_move?(jump)
+      is_double_jump = (piece.position[0] - jump[0]).abs == 2
+
+      { type: :standard, piece: piece, ending_position: jump, double_jump: is_double_jump } if valid_move?(jump)
     end
   end
 

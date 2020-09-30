@@ -7,12 +7,10 @@ require_relative '../special_generators/en_passant_generator'
 # A chess piece with special moving conditions based on its current state in
 # the game. Can perform a special type of move called "En Passant"
 class Pawn < ChessPiece
-  attr_accessor :double_jumped
-  attr_reader :moves_since_double_jump
+  attr_accessor :double_jumped, :moves_since_double_jump
 
   def initialize(player, position)
     super(player, position)
-    @double_jumped = false
     @moves_since_double_jump = 0
     @starting_rank = position[0]
   end
@@ -26,7 +24,7 @@ class Pawn < ChessPiece
   end
 
   def en_passant_capturable?
-    double_jumped && moves_since_double_jump.zero?
+    double_jumped && moves_since_double_jump == 1
   end
 
   def promotable?
@@ -46,7 +44,7 @@ class Pawn < ChessPiece
   end
 
   def jump_directions
-    if moved
+    if moved?
       [[1 * color_direction, 0]]
     else
       [[1 * color_direction, 0], [2 * color_direction, 0]]
