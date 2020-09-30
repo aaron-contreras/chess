@@ -21,6 +21,7 @@ RSpec.describe King do
         allow(piece).to receive(:moves).and_return([])
       end
     end
+
     context 'when not in a position to move' do
       subject(:king) { described_class.new(:white, [0, 4])}
 
@@ -107,7 +108,11 @@ RSpec.describe King do
       subject(:king) { described_class.new(:white, [0, 4]) }
       it 'returns an array with valid moves/captures/castling' do
         # Make the castle move available
-        other_pieces = pieces.reject.with_index { |_piece, index| [1, 2, 3].include?(index) }
+
+        allow(black_pieces[0]).to receive(:moves).and_return([])
+
+        other_pieces = pieces.reject.with_index { |_piece, index| [1, 2, 3].include?(index) || (17..31).include?(index) }
+
 
         long_side_rook = pieces[0]
 
@@ -126,8 +131,10 @@ RSpec.describe King do
       subject(:king) { described_class.new(:black, [7, 4]) }
 
       it 'returns an array with valid moves/captures/castling' do
+        allow(white_pieces[0]).to receive(:moves).and_return([])
+
         # Make the castle move available
-        other_pieces = pieces.reject.with_index { |_piece, index| [29, 30].include?(index) }
+        other_pieces = pieces.reject.with_index { |_piece, index| [29, 30].include?(index) || (0..15).include?(index) }
 
         short_side_rook = pieces[31]
 

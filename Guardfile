@@ -24,7 +24,7 @@
 #  * zeus: 'zeus rspec' (requires the server to be started separately)
 #  * 'just' rspec: 'rspec'
 
-guard :rspec, cmd: "bundle exec rspec" do
+guard :rspec, cmd: "bundle exec rspec spec/chess_pieces/king_spec.rb" do
   require "guard/rspec/dsl"
   dsl = Guard::RSpec::Dsl.new(self)
 
@@ -69,8 +69,8 @@ guard :rspec, cmd: "bundle exec rspec" do
   end
 end
 
-guard :shell do
-  watch(//) do |modified_files|
-    `ruby ./chess_client.rb`
-  end
-end
+# guard :shell do
+#   watch(//) do |modified_files|
+#     `ruby ./chess_client.rb`
+#   end
+# end

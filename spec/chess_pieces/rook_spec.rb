@@ -5,6 +5,7 @@ require_relative '../shared/among_chess_pieces.rb'
 
 # rubocop: disable all
 
+
 RSpec.describe Rook do
   include_context 'list_of_pieces'
 
@@ -82,6 +83,25 @@ RSpec.describe Rook do
         ]
 
         expect(list_of_moves).to contain_exactly(*expected_moves)
+      end
+    end
+
+    context 'when in a position to capture directly next to it' do
+      subject(:rook) { described_class.new(:black, [2, 0]) }
+
+      it 'returns a capture with the piece next to it' do
+        other_pieces = pieces.reject { |piece| piece == rook }
+
+        piece_next_to_rook = pieces[8]
+
+
+        expected_capture = {
+          type: :capture, piece: rook, captured_piece: piece_next_to_rook, ending_position: [1, 0]
+        }
+
+        list_of_moves = rook.moves(other_pieces)
+
+        expect(list_of_moves).to include(expected_capture)
       end
     end
   end

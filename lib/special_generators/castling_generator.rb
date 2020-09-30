@@ -48,7 +48,7 @@ class CastlingGenerator
   end
 
   def castleable_rook?(piece, side)
-    same_player?(piece) && same_rank?(piece) && piece.moved == false && piece.position[1] == side
+    same_player?(piece) && same_rank?(piece) && piece.moved? == false && piece.position[1] == side
   end
 
   def short_side_rook
@@ -61,7 +61,12 @@ class CastlingGenerator
 
   # Squares that must be empty in order to castle
   def blockers(style)
-    ranks = 3.times.map { king_rank }
+    if style == :long_side
+      ranks = [king_rank] * 3
+    else
+      ranks = [king_rank] * 2
+    end
+
     ranks.zip(GConst::BLOCKER_FILES[style])
   end
 
@@ -100,6 +105,6 @@ class CastlingGenerator
   def valid_castle?(style)
     rook = rook_getter(style)
 
-    king.moved == false && rook && path_is_cleared?(style) && no_enemies_can_move_to_path?(style)
+    king.moved? == false && rook && path_is_cleared?(style) && no_enemies_can_move_to_path?(style)
   end
 end

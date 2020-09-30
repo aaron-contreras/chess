@@ -38,14 +38,13 @@ class StandardMoveGenerator < Generator
     moves_in_direction
   end
 
-  def next_jump_captures?(next_jump, direction)
+  def next_jump_after_moves(moves, direction)
     if moves.empty?
-      jump = next_jump(piece.position, direction)
+      next_jump(piece.position, direction)
     else
-
       last_jump = moves.last[:ending_position]
 
-      jump = next_jump(last_jump, direction)
+      next_jump(last_jump, direction)
     end
   end
 
@@ -53,11 +52,7 @@ class StandardMoveGenerator < Generator
     jump_directions.map do |direction|
       moves = valid_moves(direction)
 
-      if moves.empty?
-        next_jump = next_jump(piece.position, direction)
-      else
-        next_jump = next_jump(moves.last[:ending_position], direction)
-      end
+      next_jump = next_jump_after_moves(moves, direction)
 
       next unless capture?(next_jump)
 
