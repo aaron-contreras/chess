@@ -81,3 +81,5 @@ updated_piece_set = manager.update_piece_set(moves.last)
 board.update(updated_piece_set)
 
 puts board
+
+pp updated_piece_set.select(&:moved?)
