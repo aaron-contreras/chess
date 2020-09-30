@@ -2,7 +2,7 @@
 
 require_relative './piece_finder'
 require_relative './piece_manager'
-
+require_relative './chess_pieces/king'
 # Detects whether game rules such as "check", "checkmate", or "stalemate" are in place.
 class GameRuleVerifier
   def initialize(king, all_pieces)
@@ -12,14 +12,13 @@ class GameRuleVerifier
     @finder = PieceFinder.new(all_pieces)
   end
 
-  def check?(all_pieces)
-    enemy_moves = enemy_moves(all_pieces)
+  def check?(pieces)
+    enemy_moves = enemy_moves(pieces)
 
-    enemy_moves.any? do |piece_moves|
-      piece_moves.map do |move|
-        move[:captured_piece]
-      end.include?(king)
+    includes = enemy_moves.flatten.any? do |piece_moves|
+      piece_moves[:captured_piece].is_a?(King)
     end
+    includes
   end
 
   def checkv2?(enemy_moves)

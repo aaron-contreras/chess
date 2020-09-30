@@ -37,7 +37,7 @@ black_pieces = black_piece_positions.map.with_index do |position, piece_number|
 end
 
 white_king = white_pieces[4]
-black_king = black_pieces[4]
+black_king = black_pieces[11]
 
 all_pieces = white_pieces + black_pieces
 # require 'pry'
@@ -54,36 +54,49 @@ board.update(all_pieces)
 
 puts board
 
+kings = {
+  white: white_king,
+  black: black_king
+}
+
 players = {
   white: white_pieces,
   black: black_pieces
 }
 
-active_player = players[:white]
-finder = PieceFinder.new(all_pieces)
-manager = PieceManager.new(all_pieces)
-filter = MoveFilter.new(white_king, all_pieces)
+active_player = :white
+other_player = :black
 
-moves = filter.filter_out
+loop do
+  manager = PieceManager.new(all_pieces)
+  filter = MoveFilter.new(kings[active_player], all_pieces)
+  verifier = GameRuleVerifier.new(kings[active_player], all_pieces)
 
-updated_piece_set = manager.update_piece_set(moves.last)
+  moves = filter.filter_out
 
-board.update(updated_piece_set)
+  if verifier.checkmate?(moves) || verifier.stalemate?(moves)
+    puts 'GAME OVER'
+    break
+  end
 
-puts board
+  all_pieces = manager.update_piece_set(moves.sample)
 
-filter = MoveFilter.new(black_king, updated_piece_set)
+  board.update(all_pieces)
 
-moves = filter.filter_out
+  puts board
 
-updated_piece_set = manager.update_piece_set(moves.last)
+  # Update moves since a pawn double jumped
+  # Could be refactored into the pawn class
+  all_pieces.select(&:double_jumped).each do |pawn|
+    pawn.moves_since_double_jump += 1
+  end
 
-board.update(updated_piece_set)
-
-puts board
-
-# Update moves since a pawn double jumped
-# Could be refactored into the pawn class
-updated_piece_set.select(&:double_jumped).each do |pawn|
-  pawn.moves_since_double_jump += 1
+  # Switch turns
+  if active_player == :white
+    active_player = :black
+    other_player = :white
+  else
+    active_player = :white
+    other_player = :black
+  end
 end
