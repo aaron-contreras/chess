@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+
 require_relative '../../lib/chess_pieces/pawn'
 require_relative '../shared/among_chess_pieces.rb'
 
@@ -23,8 +24,8 @@ RSpec.describe Pawn do
         list_of_moves = pawn.moves(other_pieces)
 
         expected_moves = [
-          { type: :standard, piece: pawn, ending_position: [2, 1] },
-          { type: :standard, piece: pawn, ending_position: [3, 1] }
+          { type: :standard, double_jump: false, piece: pawn, ending_position: [2, 1] },
+          { type: :standard, double_jump: true, piece: pawn, ending_position: [3, 1] }
         ]
 
         expect(list_of_moves).to contain_exactly(*expected_moves)
@@ -36,12 +37,12 @@ RSpec.describe Pawn do
 
       it 'returns only a single jump move' do
         # Mark as already moved
-        pawn.instance_variable_set(:@moved, true)
+        allow(pawn).to receive(:moved?).and_return(true)
 
         other_pieces = pieces.reject.with_index { |_piece, index| index == 19 }
 
         expected_moves = [
-          { type: :standard, piece: pawn, ending_position: [4, 3] }
+          { type: :standard, double_jump: false, piece: pawn, ending_position: [4, 3] }
         ]
 
         list_of_moves = pawn.moves(other_pieces)
@@ -55,14 +56,14 @@ RSpec.describe Pawn do
 
       it 'returns only a single jump move' do
         # Mark as already moved
-        pawn.instance_variable_set(:@moved, true)
+        allow(pawn).to receive(:moved?).and_return(true)
 
         other_pieces = pieces.reject.with_index { |_piece, index| index == 19 }
 
         list_of_moves = pawn.moves(other_pieces)
 
         expected_moves = [
-          { type: :standard, piece: pawn, ending_position: [3, 3] }
+          { type: :standard, double_jump: false, piece: pawn, ending_position: [3, 3] }
         ]
 
         expect(list_of_moves).to contain_exactly(*expected_moves)
@@ -83,8 +84,8 @@ RSpec.describe Pawn do
 
         expected_moves = [
           { type: :capture, piece: pawn, captured_piece: enemy_piece, ending_position: [2, 1] },
-          { type: :standard, piece: pawn, ending_position: [3, 2] },
-          { type: :standard, piece: pawn, ending_position: [2, 2] }
+          { type: :standard, double_jump: true, piece: pawn, ending_position: [3, 2] },
+          { type: :standard, double_jump: false, piece: pawn, ending_position: [2, 2] }
         ]
 
         expect(list_of_moves).to contain_exactly(*expected_moves)
@@ -106,7 +107,7 @@ RSpec.describe Pawn do
           list_of_moves = pawn.moves(other_pieces)
 
           expected_moves = [
-            { type: :standard, piece: pawn, ending_position: [2, 3] },
+            { type: :standard, double_jump: false, piece: pawn, ending_position: [2, 3] },
             { type: :en_passant, piece: pawn, captured_piece: enemy_pawn, ending_position: [2, 2]}
           ]
 
@@ -127,7 +128,7 @@ RSpec.describe Pawn do
           list_of_moves = pawn.moves(other_pieces)
 
           expected_moves = [
-            { type: :standard, piece: pawn, ending_position: [2, 3] },
+            { type: :standard, double_jump: false, piece: pawn, ending_position: [2, 3] },
             { type: :en_passant, piece: pawn, captured_piece: enemy_pawn, ending_position: [2, 4] }
           ]
 
@@ -144,7 +145,7 @@ RSpec.describe Pawn do
       it 'returns false' do
         # Set up conditions
         pawn.double_jumped = true
-        pawn.instance_variable_set(:@moves_since_double_jump, 1)
+        pawn.moves_since_double_jump = 7
 
         expect(pawn).not_to be_en_passant_capturable
       end
@@ -154,6 +155,7 @@ RSpec.describe Pawn do
       it 'returns true' do
         # Set up conditions
         pawn.double_jumped = true
+        pawn.moves_since_double_jump = 1
         # Pawn has not gotten another turn yet
 
         expect(pawn).to be_en_passant_capturable

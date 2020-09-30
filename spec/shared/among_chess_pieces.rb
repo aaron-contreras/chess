@@ -53,7 +53,7 @@ RSpec.shared_context 'list_of_pieces' do
 
   before do
     pieces.each do |piece|
-      allow(piece).to receive(:moved).and_return(false)
+      allow(piece).to receive(:moved?).and_return(false)
       allow(piece).to receive(:en_passant_capturable?).and_return(false)
       allow(piece).to receive(:position=)
     end
@@ -74,4 +74,5 @@ RSpec.shared_examples 'piece_display' do |piece|
     end
   end
 end
+
 # rubocop: enable all
