@@ -36,7 +36,7 @@ class CastlingGenerator
       rook_ending_position = [king_rank, 5]
     end
 
-    { type: :castling, king: king, rook: rook, king_ending_position: king_ending_position, rook_ending_position: rook_ending_position }
+    { type: :castling, style: style, king: king, rook: rook, king_ending_position: king_ending_position, rook_ending_position: rook_ending_position }
   end
 
   def same_player?(piece)

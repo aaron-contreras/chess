@@ -119,7 +119,7 @@ RSpec.describe King do
         list_of_moves = king.moves(other_pieces)
 
         expected_moves = [
-          { type: :castling, king: king, rook: long_side_rook, king_ending_position: [0, 2], rook_ending_position: [0, 3] },
+          { type: :castling, style: :long_side, king: king, rook: long_side_rook, king_ending_position: [0, 2], rook_ending_position: [0, 3] },
           { type: :standard, piece: king, ending_position: [0, 3] }
         ]
 
@@ -141,7 +141,7 @@ RSpec.describe King do
         list_of_moves = king.moves(other_pieces)
 
         expected_moves = [
-          { type: :castling, king: king, rook: short_side_rook, king_ending_position: [7, 6], rook_ending_position: [7, 5] },
+          { type: :castling, style: :short_side, king: king, rook: short_side_rook, king_ending_position: [7, 6], rook_ending_position: [7, 5] },
 
           { type: :standard, piece: king, ending_position: [7, 5] }
         ]
