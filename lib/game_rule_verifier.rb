@@ -5,32 +5,25 @@ require_relative './piece_manager'
 require_relative './chess_pieces/king'
 # Detects whether game rules such as "check", "checkmate", or "stalemate" are in place.
 class GameRuleVerifier
-  def initialize(king, all_pieces)
-    @king = king
-    @player = king.player
-    @all_pieces = all_pieces
-    @finder = PieceFinder.new(all_pieces)
+  # def check?(pieces)
+  #   enemy_moves = enemy_moves(pieces)
+
+  #   includes = enemy_moves.flatten.any? do |piece_moves|
+  #     piece_moves[:captured_piece].is_a?(King)
+  #   end
+  #   includes
+  # end
+
+  def check?(enemy_moves)
+    enemy_moves.any? { |move| move[:captured_piece].is_a?(King) }
   end
 
-  def check?(pieces)
-    enemy_moves = enemy_moves(pieces)
-
-    includes = enemy_moves.flatten.any? do |piece_moves|
-      piece_moves[:captured_piece].is_a?(King)
-    end
-    includes
+  def checkmate?(player_moves, enemy_moves)
+    player_moves.empty? && check?(enemy_moves)
   end
 
-  def checkv2?(enemy_moves)
-    enemy_moves.any? { |move| move[:captured_piece] == king }
-  end
-
-  def checkmate?(player_moves)
-    player_moves.empty? && check?(all_pieces)
-  end
-
-  def stalemate?(player_moves)
-    player_moves.empty? && check?(all_pieces) == false
+  def stalemate?(player_moves, enemy_moves)
+    player_moves.empty? && check?(enemy_moves) == false
   end
 
   private

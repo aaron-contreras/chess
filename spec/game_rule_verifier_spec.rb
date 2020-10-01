@@ -5,7 +5,7 @@ require_relative './shared/among_chess_pieces.rb'
 
 # rubocop: disable all
 RSpec.describe GameRuleVerifier do
-  subject(:verifier) { described_class.new(king, all_pieces) }
+  subject(:verifier) { described_class.new }
 
   include_context 'list_of_pieces'
 
@@ -14,7 +14,8 @@ RSpec.describe GameRuleVerifier do
     let(:friendly_pieces) { white_pieces.first(3) + [king] }
     let(:enemy_pieces) { black_pieces.first(3) }
     let(:all_pieces) { friendly_pieces + enemy_pieces }
-
+    let(:enemy_moves) { enemy_pieces.map(&:moves).flatten }
+    let(:friendly_moves) { friendly_pieces.map(&:moves).flatten }
 
     # Stub move behavior for enemy_pieces
     before do
@@ -32,7 +33,7 @@ RSpec.describe GameRuleVerifier do
       it 'returns false' do
         allow(king).to receive(:position).and_return([4, 4])
 
-        check_state = verifier.check?(all_pieces)
+        check_state = verifier.check?(enemy_moves)
 
         expect(check_state).to eq(false)
       end
@@ -48,7 +49,7 @@ RSpec.describe GameRuleVerifier do
           [{ type: :capture, piece: enemy_pieces[0], captured_piece: king, ending_position: [4, 5]}]
         )
 
-        check_state = verifier.check?(all_pieces)
+        check_state = verifier.check?(enemy_moves)
 
         expect(check_state).to eq(true)
       end
@@ -60,6 +61,8 @@ RSpec.describe GameRuleVerifier do
     let(:friendly_pieces) { white_pieces.first(3) }
     let(:enemy_pieces) { black_pieces.first(3) }
     let(:all_pieces) { friendly_pieces + enemy_pieces }
+    let(:friendly_moves) { friendly_pieces.map(&:moves).flatten }
+    let(:enemy_moves) { enemy_pieces.map(&:moves).flatten }
 
     before do
       # Stub move behavior for enemy_pieces
@@ -92,7 +95,7 @@ RSpec.describe GameRuleVerifier do
         ])
 
         player_moves = friendly_pieces.map(&:moves)
-        checkmate_state = verifier.checkmate?(all_pieces)
+        checkmate_state = verifier.checkmate?(friendly_moves, enemy_moves)
 
         expect(checkmate_state).to eq(false)
       end
@@ -101,11 +104,12 @@ RSpec.describe GameRuleVerifier do
     context "when king can't get out of check" do
       it 'returns true' do
         allow(king).to receive(:is_a?).with(King).and_return(true)
+
         allow(friendly_pieces[0]).to receive(:moves).and_return([])
 
-        player_moves = friendly_pieces.map(&:moves).reject(&:empty?)
+        # player_moves = friendly_pieces.map(&:moves).reject(&:empty?)
 
-        checkmate_state = verifier.checkmate?(player_moves)
+        checkmate_state = verifier.checkmate?(friendly_moves, enemy_moves)
 
         expect(checkmate_state).to eq(true)
       end
@@ -114,8 +118,11 @@ RSpec.describe GameRuleVerifier do
 
   describe '#stalemate?' do
     let(:king) { white_pieces[4] }
+    let(:friendly_pieces) { [king] }
     let(:enemy_pieces) { black_pieces.first(2) }
     let(:all_pieces) { enemy_pieces + [king] }
+    let(:friendly_moves) { friendly_pieces.map(&:moves).flatten }
+    let(:enemy_moves) { enemy_pieces.map(&:moves).flatten }
 
     context 'when in stalemate' do
       before do
@@ -132,7 +139,7 @@ RSpec.describe GameRuleVerifier do
       end
 
       it 'returns true' do
-        expect(verifier.stalemate?(king.moves)).to eq(true)
+        expect(verifier.stalemate?(friendly_moves, enemy_moves)).to eq(true)
       end
 
       context 'when not in stalemate' do
@@ -143,7 +150,7 @@ RSpec.describe GameRuleVerifier do
         end
 
         it 'returns false' do
-          expect(verifier.stalemate?(king.moves)).to eq(false)
+          expect(verifier.stalemate?(friendly_moves, enemy_moves)).to eq(false)
         end
       end
     end

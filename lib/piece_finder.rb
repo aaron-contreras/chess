@@ -3,6 +3,8 @@
 require_relative './chess_pieces/king.rb'
 
 class PieceFinder
+  attr_accessor :all_pieces
+
   def initialize(all_pieces)
     @all_pieces = all_pieces
   end
@@ -26,8 +28,4 @@ class PieceFinder
   def king(player)
     friendly_pieces(player).find { |piece| piece.is_a?(King) }
   end
-
-  private
-
-  attr_reader :all_pieces
 end
