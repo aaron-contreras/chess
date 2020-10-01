@@ -11,6 +11,7 @@ require_relative 'lib/chess_pieces/king'
 require_relative 'lib/chess_pieces/pawn'
 require_relative 'lib/piece_manager'
 require_relative 'lib/move_filter'
+require_relative 'lib/translator'
 prompt = TTY::Prompt.new
 
 player_piece_color = prompt.select('Select your pieces', GConst::PIECE_COLORS, cycle: true, show_help: :always)
@@ -67,39 +68,49 @@ players = {
 active_player = :white
 other_player = :black
 
-choices = { a1: all_pieces[0], a2: all_pieces[1] }
-answer = prompt.select("Select a piece to move", choices)
-p answer
-# loop do
-#   manager = PieceManager.new(all_pieces)
-#   filter = MoveFilter.new(kings[active_player], all_pieces)
-#   verifier = GameRuleVerifier.new(kings[active_player], all_pieces)
+loop do
+  manager = PieceManager.new(all_pieces)
+  filter = MoveFilter.new(kings[active_player], all_pieces)
+  verifier = GameRuleVerifier.new(kings[active_player], all_pieces)
+  translator = Translator.new
 
-#   moves = filter.filter_out
+  moves = filter.filter_out
 
-#   if verifier.checkmate?(moves) || verifier.stalemate?(moves)
-#     puts 'GAME OVER'
-#     break
-#   end
+  # Sort moves by priority
+  en_passant = proc { |move| move[:type] == :en_passant }
+  castling = proc { |move| move[:type] == :castling }
+  captures = proc { |move| move[:type] == :capture }
+  standard = proc { |move| move[:type] == :standard }
 
-#   all_pieces = manager.update_piece_set(moves.sample)
+  sorted_moves = moves.select(&en_passant) + moves.select(&castling) + moves.select(&captures) + moves.select(&standard)
 
-#   board.update(all_pieces)
+  translated_moves = sorted_moves.map { |move| [translator.translate(move), move] }.to_h
 
-#   puts board
+  if verifier.checkmate?(moves) || verifier.stalemate?(moves)
+    puts 'GAME OVER'
+    break
+  end
 
-#   # Update moves since a pawn double jumped
-#   # Could be refactored into the pawn class
-#   all_pieces.select(&:double_jumped).each do |pawn|
-#     pawn.moves_since_double_jump += 1
-#   end
+  selected_move = prompt.select('Select your move', translated_moves, filter: true)
 
-#   # Switch turns
-#   if active_player == :white
-#     active_player = :black
-#     other_player = :white
-#   else
-#     active_player = :white
-#     other_player = :black
-#   end
-# end
+  all_pieces = manager.update_piece_set(selected_move)
+
+  board.update(all_pieces)
+
+  puts board
+
+  # Update moves since a pawn double jumped
+  # Could be refactored into the pawn class
+  all_pieces.select(&:double_jumped).each do |pawn|
+    pawn.moves_since_double_jump += 1
+  end
+
+  # Switch turns
+  if active_player == :white
+    active_player = :black
+    other_player = :white
+  else
+    active_player = :white
+    other_player = :black
+  end
+end
