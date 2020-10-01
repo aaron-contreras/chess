@@ -38,9 +38,14 @@ black_pieces = black_piece_positions.map.with_index do |position, piece_number|
 end
 
 white_king = white_pieces[4]
-black_king = black_pieces[11]
+white_king.position = [5, 3]
+black_king = black_pieces[12]
+black_king.position = [7, 1]
 
 all_pieces = white_pieces + black_pieces
+all_pieces = [white_king, Queen.new(:white, [6, 1]), black_king]
+require 'pry'
+binding.pry
 # require 'pry'
 # binding.pry
 

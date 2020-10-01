@@ -51,7 +51,7 @@ class PieceManager
     else
       black_captures << piece
     end
-
-    all_pieces.delete(piece)
+    captured_piece = all_pieces.find { |a_piece| a_piece.position == piece.position }
+    all_pieces.delete(captured_piece)
   end
 end
