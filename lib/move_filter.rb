@@ -47,8 +47,6 @@ class MoveFilter
     end
 
     will_be_check
-
-
   end
 
   def moves(piece_set)

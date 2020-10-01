@@ -15,6 +15,7 @@ RSpec.describe GameRuleVerifier do
     let(:enemy_pieces) { black_pieces.first(3) }
     let(:all_pieces) { friendly_pieces + enemy_pieces }
 
+
     # Stub move behavior for enemy_pieces
     before do
       allow(enemy_pieces[0]).to receive(:moves).and_return(
@@ -40,6 +41,7 @@ RSpec.describe GameRuleVerifier do
     context 'when the king is in check' do
       it 'returns true' do
         allow(king).to receive(:position).and_return([4, 5])
+        allow(king).to receive(:is_a?).with(King).and_return(true)
 
         # Simulate ability to put in check
         allow(enemy_pieces[0]).to receive(:moves).and_return(
@@ -98,6 +100,7 @@ RSpec.describe GameRuleVerifier do
 
     context "when king can't get out of check" do
       it 'returns true' do
+        allow(king).to receive(:is_a?).with(King).and_return(true)
         allow(friendly_pieces[0]).to receive(:moves).and_return([])
 
         player_moves = friendly_pieces.map(&:moves).reject(&:empty?)

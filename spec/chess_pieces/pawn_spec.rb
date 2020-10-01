@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-
 require_relative '../../lib/chess_pieces/pawn'
 require_relative '../shared/among_chess_pieces.rb'
 
