@@ -50,6 +50,15 @@ module GameConstants
 
   # Positions where pieces will be placed on the board at the start of a game
   START_POSITIONS = (0..7).to_a.repeated_permutation(2).to_a.select { |rank, _file| [0, 1, 6, 7].include?(rank) }
+
+  CHESS_NOTATION = {
+    Rook: 'R',
+    Knight: 'N',
+    Bishop: 'B',
+    Queen: 'Q',
+    King: 'K',
+    Pawn: ''
+  }.freeze
 end
 
 # Alias for module

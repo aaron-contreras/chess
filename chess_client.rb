@@ -67,36 +67,39 @@ players = {
 active_player = :white
 other_player = :black
 
-loop do
-  manager = PieceManager.new(all_pieces)
-  filter = MoveFilter.new(kings[active_player], all_pieces)
-  verifier = GameRuleVerifier.new(kings[active_player], all_pieces)
+choices = { a1: all_pieces[0], a2: all_pieces[1] }
+answer = prompt.select("Select a piece to move", choices)
+p answer
+# loop do
+#   manager = PieceManager.new(all_pieces)
+#   filter = MoveFilter.new(kings[active_player], all_pieces)
+#   verifier = GameRuleVerifier.new(kings[active_player], all_pieces)
 
-  moves = filter.filter_out
+#   moves = filter.filter_out
 
-  if verifier.checkmate?(moves) || verifier.stalemate?(moves)
-    puts 'GAME OVER'
-    break
-  end
+#   if verifier.checkmate?(moves) || verifier.stalemate?(moves)
+#     puts 'GAME OVER'
+#     break
+#   end
 
-  all_pieces = manager.update_piece_set(moves.sample)
+#   all_pieces = manager.update_piece_set(moves.sample)
 
-  board.update(all_pieces)
+#   board.update(all_pieces)
 
-  puts board
+#   puts board
 
-  # Update moves since a pawn double jumped
-  # Could be refactored into the pawn class
-  all_pieces.select(&:double_jumped).each do |pawn|
-    pawn.moves_since_double_jump += 1
-  end
+#   # Update moves since a pawn double jumped
+#   # Could be refactored into the pawn class
+#   all_pieces.select(&:double_jumped).each do |pawn|
+#     pawn.moves_since_double_jump += 1
+#   end
 
-  # Switch turns
-  if active_player == :white
-    active_player = :black
-    other_player = :white
-  else
-    active_player = :white
-    other_player = :black
-  end
-end
+#   # Switch turns
+#   if active_player == :white
+#     active_player = :black
+#     other_player = :white
+#   else
+#     active_player = :white
+#     other_player = :black
+#   end
+# end
