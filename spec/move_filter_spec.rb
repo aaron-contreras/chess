@@ -55,7 +55,7 @@ RSpec.describe MoveFilter do
 
   describe '#filter_out' do
     context 'when the king is in check' do
-      before { allow(verifier).to receive(:checkv2?).and_return(true) }
+      before { allow(verifier).to receive(:check?).and_return(true) }
 
       it "keeps only moves that save the king from check state" do
         valid_moves = [
@@ -87,7 +87,7 @@ RSpec.describe MoveFilter do
     end
 
     context 'when the king is in checkmate' do
-      before { allow(verifier).to receive(:checkv2?).and_return(true) }
+      before { allow(verifier).to receive(:check?).and_return(true) }
       it 'returns an empty move set' do
         # Simulate check mate
         allow(friendly_pieces[1]).to receive(:moves).and_return(

@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-require_relative '../lib/game_rule_verifier'
+require_relative '../lib/rule_verifier'
 require_relative './shared/among_chess_pieces.rb'
 
 # rubocop: disable all
-RSpec.describe GameRuleVerifier do
+
+RSpec.describe RuleVerifier do
   subject(:verifier) { described_class.new }
 
   include_context 'list_of_pieces'
