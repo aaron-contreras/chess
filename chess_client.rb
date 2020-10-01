@@ -117,7 +117,7 @@ loop do
     break
   end
 
-  selection = prompt.select('Select your move', translated_moves, filter: true)
+  selected_move = prompt.select('Select your move', translated_moves, filter: true)
 
   all_pieces = manager.update_piece_set(selected_move)
 
