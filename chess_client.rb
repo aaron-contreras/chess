@@ -12,6 +12,7 @@ require_relative 'lib/chess_pieces/pawn'
 require_relative 'lib/piece_manager'
 require_relative 'lib/move_filter'
 require_relative 'lib/translator'
+require_relative 'lib/rule_verifier'
 prompt = TTY::Prompt.new
 
 player_piece_color = prompt.select('Select your pieces', GConst::PIECE_COLORS, cycle: true, show_help: :always)
@@ -44,8 +45,6 @@ black_king.position = [7, 1]
 
 all_pieces = white_pieces + black_pieces
 all_pieces = [white_king, Queen.new(:white, [6, 1]), black_king]
-require 'pry'
-binding.pry
 # require 'pry'
 # binding.pry
 
@@ -75,11 +74,25 @@ other_player = :black
 
 loop do
   manager = PieceManager.new(all_pieces)
-  filter = MoveFilter.new(kings[active_player], all_pieces)
-  verifier = GameRuleVerifier.new(kings[active_player], all_pieces)
+  finder = PieceFinder.new(all_pieces)
   translator = Translator.new
+  verifier = RuleVerifier.new
+  filter = MoveFilter.new(active_player, all_pieces, verifier)
 
-  moves = filter.filter_out
+  friendly_pieces = finder.friendly_pieces(active_player)
+  enemy_pieces = finder.enemy_pieces(active_player)
+
+  friendly_moves = friendly_pieces.map do |piece|
+    other_pieces = finder.other_pieces(piece)
+    piece.moves(other_pieces)
+  end.flatten
+
+  enemy_moves = enemy_pieces.map do |piece|
+    other_pieces = finder.other_pieces(piece)
+    piece.moves(other_pieces)
+  end.flatten
+
+  friendly_moves = filter.filter_out(friendly_moves, enemy_moves)
 
   # Sort moves by priority
   en_passant = proc { |move| move[:type] == :en_passant }
@@ -87,11 +100,11 @@ loop do
   captures = proc { |move| move[:type] == :capture }
   standard = proc { |move| move[:type] == :standard }
 
-  sorted_moves = moves.select(&en_passant) + moves.select(&castling) + moves.select(&captures) + moves.select(&standard)
+  sorted_moves = friendly_moves.select(&en_passant) + friendly_moves.select(&castling) + friendly_moves.select(&captures) + friendly_moves.select(&standard)
 
   translated_moves = sorted_moves.map { |move| [translator.translate(move), move] }.to_h
 
-  if verifier.checkmate?(moves) || verifier.stalemate?(moves)
+  if verifier.checkmate?(friendly_moves, enemy_moves) || verifier.stalemate?(friendly_moves, enemy_moves)
     puts 'GAME OVER'
     break
   end
@@ -102,6 +115,7 @@ loop do
 
   board.update(all_pieces)
 
+  system 'clear'
   puts board
 
   # Update moves since a pawn double jumped
