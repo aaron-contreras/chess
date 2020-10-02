@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require_relative 'chess_pieces/rook'
-require_relative 'chess_pieces/knight'
-require_relative 'chess_pieces/bishop'
-require_relative 'chess_pieces/queen'
-require_relative 'chess_pieces/king'
-require_relative 'chess_pieces/pawn'
-
 # Game info and settings used all throughout
 module GameConstants
   # DISPLAY
@@ -62,10 +55,6 @@ module GameConstants
     white: PIECE_SQUARES.first(16),
     black: PIECE_SQUARES[16..-1]
   }.freeze
-
-  WHITE_PIECE_LAYOUT = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook] + 8.times.map { Pawn }
-
-  BLACK_PIECE_LAYOUT = WHITE_PIECE_LAYOUT.rotate(8)
 
   CHESS_NOTATION = {
     Rook: 'R',

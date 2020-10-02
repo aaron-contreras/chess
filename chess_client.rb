@@ -13,12 +13,14 @@ require_relative 'lib/piece_manager'
 require_relative 'lib/move_filter'
 require_relative 'lib/translator'
 require_relative 'lib/rule_verifier'
-prompt = TTY::Prompt.new
 
 # Executable
 class ChessClient
   attr_accessor :player_piece_color, :all_pieces, :board, :active_player, :non_active_player,
                 :time_started, :moves_performed, :capture_list, :finder, :translator, :verifier
+
+  WHITE_PIECE_LAYOUT = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook] + 8.times.map { Pawn }
+  BLACK_PIECE_LAYOUT = WHITE_PIECE_LAYOUT.rotate(8)
 
   def run
     prompt = TTY::Prompt.new
@@ -52,11 +54,11 @@ class ChessClient
 
   def create_pieces
     white_pieces = GameConstants::STARTING_POSITIONS[:white].map.with_index do |position, piece_number|
-      GameConstants::WHITE_PIECE_LAYOUT[piece_number].new(:white, position)
+      WHITE_PIECE_LAYOUT[piece_number].new(:white, position)
     end
 
     black_pieces = GameConstants::STARTING_POSITIONS[:black].map.with_index do |position, piece_number|
-      GameConstants::BLACK_PIECE_LAYOUT[piece_number].new(:black, position)
+      BLACK_PIECE_LAYOUT[piece_number].new(:black, position)
     end
 
     self.all_pieces = white_pieces + black_pieces
@@ -98,10 +100,42 @@ class ChessClient
 
       self.all_pieces = manager.update_piece_set(selected_move)
 
+      if promotable_piece?(selected_move)
+        pawn = selected_move[:piece]
+        replacement_piece = select_replacement_piece(pawn)
+        promotion = { type: :promotion, pawn: pawn, replacement: replacement_piece }
+
+        self.all_pieces = manager.update_piece_set(promotion)
+      end
+
       update_game_state
 
       puts board
     end
+  end
+
+  def promotable_piece?(move)
+    %i[capture standard].include?(move[:type]) && move[:piece].promotable?
+  end
+
+  def select_replacement_piece(pawn)
+    if active_player == player_piece_color
+      prompt = TTY::Prompt.new
+      piece_type = prompt.select('What would you like to promote your pawn to?', promotion_piece_list)
+    else
+      piece_type = promotion_piece_list.values.sample
+    end
+
+    piece_type.new(pawn.player, pawn.position)
+  end
+
+  def promotion_piece_list
+    {
+      'Queen' => Queen,
+      'Rook' => Rook,
+      'Bishop' => Bishop,
+      'Knight' => Knight
+    }
   end
 
   def prepare_moves_for_prompt(move_set)

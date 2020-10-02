@@ -20,6 +20,8 @@ class PieceManager
     elsif %i[capture en_passant].include?(move[:type])
       capture(move)
       move_piece(move)
+    else
+      promote(move)
     end
 
     all_pieces
@@ -56,5 +58,13 @@ class PieceManager
     end
 
     all_pieces.delete(captured_piece)
+  end
+
+  def promote(move)
+    pawn = move[:pawn]
+    replacement = move[:replacement]
+
+    all_pieces << replacement
+    all_pieces.delete(pawn)
   end
 end

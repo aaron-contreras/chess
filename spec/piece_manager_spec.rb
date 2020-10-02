@@ -72,5 +72,18 @@ RSpec.describe PieceManager do
         expect(piece_set).not_to include(piece_to_capture)
       end
     end
+
+    context 'when given a promotion move' do
+      let(:pawn) { pieces[26] }
+      let(:replacement_piece) { double('Queen', player: pawn.player, position: pawn.position) }
+      let(:move) { { type: :promotion, pawn: pawn, replacement: replacement_piece } }
+
+      it 'promotes the pawn to the selected piece' do
+        piece_set = manager.update_piece_set(move)
+
+        expect(piece_set).not_to include(pawn)
+        expect(piece_set).to include(replacement_piece)
+      end
+    end
   end
 end
