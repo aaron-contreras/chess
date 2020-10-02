@@ -13,9 +13,11 @@ require_relative 'lib/piece_manager'
 require_relative 'lib/move_filter'
 require_relative 'lib/translator'
 require_relative 'lib/rule_verifier'
-
+require_relative 'lib/serializable'
 # Executable
 class ChessClient
+  include Serializable
+
   attr_accessor :player_piece_color, :all_pieces, :board, :active_player, :non_active_player,
                 :time_started, :moves_performed, :capture_list, :finder, :translator, :verifier
 
@@ -25,10 +27,61 @@ class ChessClient
   def run
     prompt = TTY::Prompt.new
     choices = {
-      'New game': proc { create_new_game }
+      'New game': proc { create_new_game },
+      'Load game': proc { load_game_prompt }
     }
-    answer = prompt.select('Main menu', choices)
-    puts answer
+
+    prompt.select('Main menu', choices)
+  end
+
+  def save_prompt
+    system 'clear'
+    puts board
+
+    prompt = TTY::Prompt.new
+
+    game_name = prompt.ask('Name your game to easily find it later (at least one character)') do |properties|
+      properties.required(true)
+      properties.validate(/\w+/)
+    end
+
+    save_to_file(game_name)
+
+    puts "#{game_name} saved successfully"
+
+    options_menu
+  end
+
+  def load_game_prompt
+    system 'clear'
+    puts 'hello'
+
+    prompt = TTY::Prompt.new
+
+    filename = prompt.select('Select a game to load', game_list)
+
+    serialized_string = File.read(filename)
+
+    deserialize(serialized_string)
+
+    start_game
+  end
+
+  def options_menu
+    system 'clear'
+    puts board
+
+    prompt = TTY::Prompt.new
+    choices = {
+      'Save progress' => (proc { save_prompt }),
+      'Back to game' => proc { start_game },
+      'Declare draw' => 1,
+      'Give up' => 2,
+      'Back to Main menu' => proc { run },
+      'Quit' => 3
+    }
+
+    prompt.select('Options menu', choices)
   end
 
   def create_new_game
@@ -74,9 +127,11 @@ class ChessClient
   def start_game
     self.translator = Translator.new
     self.verifier = RuleVerifier.new
-    puts board
 
     loop do
+      system 'clear'
+      puts board
+
       manager = PieceManager.new(all_pieces)
       self.finder = PieceFinder.new(all_pieces)
       filter = MoveFilter.new(active_player, all_pieces, verifier)
@@ -96,11 +151,13 @@ class ChessClient
 
       prompt = TTY::Prompt.new
 
-      selected_move = prompt.select('Select your move', move_list, filter: true)
+      choices = { 'Options menu' => proc { options_menu } }.merge(move_list)
+
+      selected_move = prompt.select('Select your move', choices, filter: true)
 
       self.all_pieces = manager.update_piece_set(selected_move)
 
-      if promotable_piece?(selected_move)
+      if promotable_piece_after?(selected_move)
         pawn = selected_move[:piece]
         replacement_piece = select_replacement_piece(pawn)
         promotion = { type: :promotion, pawn: pawn, replacement: replacement_piece }
@@ -109,12 +166,13 @@ class ChessClient
       end
 
       update_game_state
-
-      puts board
     end
+
+    system 'clear'
+    puts board
   end
 
-  def promotable_piece?(move)
+  def promotable_piece_after?(move)
     %i[capture standard].include?(move[:type]) && move[:piece].promotable?
   end
 
