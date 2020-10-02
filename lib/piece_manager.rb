@@ -18,8 +18,8 @@ class PieceManager
     elsif move[:type] == :castling
       castle(move)
     elsif %i[capture en_passant].include?(move[:type])
+      capture(move)
       move_piece(move)
-      capture(move[:captured_piece])
     end
 
     all_pieces
@@ -36,8 +36,9 @@ class PieceManager
   end
 
   def move_piece(move)
-    all_pieces.find { |piece| piece.position == move[:piece].position }.position = move[:ending_position]
-    # move[:piece].position = move[:ending_position]
+    piece_to_move = all_pieces.find { |piece| piece.position == move[:piece].position }
+
+    piece_to_move.position = move[:ending_position]
   end
 
   def castle(move)
@@ -45,13 +46,15 @@ class PieceManager
     move[:rook].position = move[:rook_ending_position]
   end
 
-  def capture(piece)
-    if piece.player == :white
-      white_captures << piece
+  def capture(move)
+    captured_piece = all_pieces.find { |a_piece| a_piece.position == move[:captured_piece].position }
+
+    if captured_piece.player == :white
+      white_captures << captured_piece
     else
-      black_captures << piece
+      black_captures << captured_piece
     end
-    captured_piece = all_pieces.find { |a_piece| a_piece.position == piece.position }
+
     all_pieces.delete(captured_piece)
   end
 end
