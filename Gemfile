@@ -10,6 +10,7 @@ gem 'reek', '~> 6.0', '>= 6.0.1'
 gem 'rubocop', '~> 0.89.1'
 gem 'paint'
 gem 'oj'
+gem 'figlet'
 
 group :development do
   gem 'guard'
