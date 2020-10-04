@@ -78,7 +78,7 @@ class ChessClient
       'Declare draw' => 1,
       'Give up' => 2,
       'Back to Main menu' => proc { run },
-      'Quit' => 3
+      'Quit' => proc { exit(true) }
     }
 
     prompt.select('Options menu', choices)
