@@ -35,15 +35,4 @@ class ChessPiece
 
     GConst::UNICODE_PIECES.dig(player, piece_type)
   end
-
-  def serialize
-    JSON.dump(
-      {
-        '@player' => player,
-        '@position' => position,
-        '@double_jumped' => double_jumped,
-        '@starting_position' => starting_position
-      }
-    )
-  end
 end
