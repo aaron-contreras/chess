@@ -8,13 +8,13 @@ class ChessPiece
   attr_accessor :position, :moved, :double_jumped
 
   def initialize(player, position)
-    @double_jumped = false
     @player = player
     @position = position
+    @double_jumped = false
     @starting_position = position
   end
 
-  def moves(other_pieces)
+  def moves(_other_pieces)
     raise NotImplementedError, 'Implement to allow your chess piece to know how to move'
   end
 

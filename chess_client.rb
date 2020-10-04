@@ -45,9 +45,9 @@ class ChessClient
       properties.validate(/\w+/)
     end
 
-    save_to_file(game_name)
-
     puts "#{game_name} saved successfully"
+
+    save_to_file(game_name)
 
     options_menu
   end
