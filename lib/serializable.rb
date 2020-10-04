@@ -1,26 +1,18 @@
 # frozen_string_literal: true
 
 # Require the serializer currently set
-require 'json'
+require 'oj'
 
+# Module for serializing and deserializing a game
 module Serializable
   EXTENSION = 'json'
-  SERIALIZER = JSON
+  SERIALIZER = Oj
   SAVED_GAMES_DIRECTORY = './saved_games'
 
-  def serialize
-    game_data = instance_variables.reduce({}) do |hash, variable|
-      hash[variable] = instance_variable_get(variable)
-      hash
-    end 
-
-    SERIALIZER.dump(game_data)
-  end
-
   def deserialize(string)
-    object = SERIALIZER.parse(string)
-    object.each do |key, value|
-      instance_variable_set(key, value)
+    recovered_client = Oj.load(string)
+    recovered_client.instance_variables.each do |var|
+      instance_variable_set(var, recovered_client.instance_variable_get(var))
     end
   end
 
@@ -31,7 +23,7 @@ module Serializable
   def save_to_file(game_name)
     check_for_saved_games_directory
     path = "#{SAVED_GAMES_DIRECTORY}/#{game_name}.#{EXTENSION}"
-    File.open(path, 'w') { |file| file.puts serialize}
+    File.open(path, 'w') { |file| file.puts Oj.dump(self) }
   end
 
   def game_list
