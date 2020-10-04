@@ -14,7 +14,7 @@ RSpec.describe Translator do
     it 'returns a nicely formatted move' do
       translated_move = translator.translate(move)
 
-      expect(translated_move).to eq("MOVE a1 #{pieces[0]} -> d1")
+      expect(translated_move).to eq("MOVE a1 #{pieces[0]} -> a4")
     end
   end
 
@@ -24,7 +24,7 @@ RSpec.describe Translator do
     it 'returns a nicely formatted move' do
       translated_move = translator.translate(move)
       
-      expect(translated_move).to eq("CAPTURE a2 #{pieces[1]} -> g3 #{pieces[18]}")
+      expect(translated_move).to eq("CAPTURE b1 #{pieces[1]} -> c7 #{pieces[18]}")
     end
   end
 
@@ -48,7 +48,7 @@ RSpec.describe Translator do
     it 'returns a nicely formatted move' do
       translated_move = translator.translate(move)
 
-      expect(translated_move).to eq("EN PASSANT a1 #{pawn} -> g2 #{captured_pawn}")
+      expect(translated_move).to eq("EN-PASSANT a1 #{pawn} -> b7 #{captured_pawn}")
     end
   end
 end

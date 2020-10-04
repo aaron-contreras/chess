@@ -40,11 +40,11 @@ module GameConstants
     short_side: [5, 6]
   }.freeze
 
-  # Index to rank conversion
-  INDEX_TO_RANK = ('a'..'h').to_a
-
   # Index to file conversion
-  INDEX_TO_FILE = ('1'..'8').to_a
+  INDEX_TO_FILE = ('a'..'h').to_a
+
+  # Index to rank conversion
+  INDEX_TO_RANK = ('1'..'8').to_a
 
   PADDING_ROW = Array.new(8) { ' ' }
 
@@ -54,15 +54,6 @@ module GameConstants
   STARTING_POSITIONS = {
     white: PIECE_SQUARES.first(16),
     black: PIECE_SQUARES[16..-1]
-  }.freeze
-
-  CHESS_NOTATION = {
-    Rook: 'R',
-    Knight: 'N',
-    Bishop: 'B',
-    Queen: 'Q',
-    King: 'K',
-    Pawn: ''
   }.freeze
 
   MOVE_PRECEDENCE = [

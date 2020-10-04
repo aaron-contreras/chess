@@ -19,14 +19,14 @@ class Translator
   def translate_position(position)
     rank = position[0]
     file = position[1]
-     "#{GameConstants::INDEX_TO_RANK[rank]}#{GameConstants::INDEX_TO_FILE[file]}"
+    "#{GameConstants::INDEX_TO_FILE[file]}#{GameConstants::INDEX_TO_RANK[rank]}"
   end
 
   def translate_type(type)
     if type == :standard
       'MOVE'
     elsif type == :en_passant
-      'EN PASSANT'
+      'EN-PASSANT'
     else
       type.to_s.upcase
     end

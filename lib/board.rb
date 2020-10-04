@@ -74,7 +74,7 @@ class Board
       main_row = format_row(row, row_colors)
 
       <<~RANK
-        #{alphabetical_ranks[rank]} #{main_row}
+        #{oriented_ranks[rank]} #{main_row}
       RANK
     end
   end
@@ -101,7 +101,7 @@ class Board
     square.player.to_s unless square == ' '
   end
 
-  def alphabetical_ranks
+  def oriented_ranks
     if bottom_side_player == :white
       GameConstants::INDEX_TO_RANK.reverse
     else
