@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'tty-prompt'
+require 'figlet'
 require_relative 'lib/game_constants'
 require_relative 'lib/board'
 require_relative 'lib/chess_pieces/rook'
@@ -14,6 +15,7 @@ require_relative 'lib/move_filter'
 require_relative 'lib/translator'
 require_relative 'lib/rule_verifier'
 require_relative 'lib/serializable'
+
 # Executable
 class ChessClient
   include Serializable
@@ -25,10 +27,22 @@ class ChessClient
   BLACK_PIECE_LAYOUT = WHITE_PIECE_LAYOUT.rotate(8)
 
   def run
+    system 'clear'
+
     prompt = TTY::Prompt.new
+
+    font = Figlet::Font.new('./isometric3.flf')
+
+    figlet = Figlet::Typesetter.new(font)
+
+    puts figlet['Chess!']
+    puts
+
     choices = {
       'New game': proc { create_new_game },
-      'Load game': proc { load_game_prompt }
+      'Load game': proc { load_game_prompt },
+      'Quick tutorial': 3,
+      'Quit': proc { system 'exit' }
     }
 
     prompt.select('Main menu', choices)

@@ -29,6 +29,7 @@ class Board
 
   def to_s
     <<~BOARD
+
       #{color_squares.join}
           #{GameConstants::INDEX_TO_FILE.join('    ')}  
     BOARD
@@ -73,9 +74,7 @@ class Board
       main_row = format_row(row, row_colors)
 
       <<~RANK
-          #{padding}
         #{alphabetical_ranks[rank]} #{main_row}
-          #{padding}
       RANK
     end
   end
