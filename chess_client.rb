@@ -153,7 +153,7 @@ class ChessClient
 
       choices = { 'Options menu' => proc { options_menu } }.merge(move_list)
 
-      selected_move = prompt.select('Select your move', choices, filter: true)
+      selected_move = prompt.select("#{active_player.to_s.capitalize}'s turn", choices, filter: true)
 
       self.all_pieces = manager.update_piece_set(selected_move)
 
