@@ -33,17 +33,6 @@ class ChessPiece
   def to_s
     piece_type = self.class.to_s.to_sym
 
-    GConst::UNICODE_PIECES.dig(player, piece_type)
-  end
-
-  def serialize
-    JSON.dump(
-      {
-        '@player' => player,
-        '@position' => position,
-        '@double_jumped' => double_jumped,
-        '@starting_position' => starting_position
-      }
-    )
+    GameConstants::UNICODE_PIECES.dig(player, piece_type)
   end
 end
