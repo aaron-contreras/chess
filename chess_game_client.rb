@@ -22,7 +22,7 @@ require_relative 'lib/serializable'
 class ChessGameClient
   include Serializable
 
-  attr_accessor :human_player, :all_pieces, :board, :active_player, :non_active_player,
+  attr_accessor :human_player, :game_mode, :all_pieces, :board, :active_player, :non_active_player,
                 :end_game_state, :finder, :translator, :verifier
 
   WHITE_PIECE_LAYOUT = [Rook, Knight, Bishop, Queen, King, Bishop, Knight, Rook] + 8.times.map { Pawn }
@@ -36,8 +36,8 @@ class ChessGameClient
   def menu_choices
     {
       main_menu: {
-        'New game': proc { create_new_game },
-        'Load game': proc { load_game_prompt },
+        'New game' =>  proc { create_new_game },
+        'Load game' => proc { load_game_prompt },
         'Quit' => proc { exit }
       },
       options_menu: {
@@ -45,6 +45,10 @@ class ChessGameClient
         'Back to game' => proc { start_game },
         'Back to Main menu' => proc { main_menu_prompt },
         'Quit': proc { close_client }
+      },
+      game_mode_selection: {
+        'Single player' => :single_player,
+        'Multiplayer' => :multiplayer
       },
       piece_color_selection: {
         'Black' => :black,
@@ -126,7 +130,12 @@ class ChessGameClient
 
     choices = { 'Options menu' => proc { options_menu_prompt } }.merge(move_list)
 
-    prompt.select("#{active_player.to_s.capitalize}'s turn", choices, filter: true)
+    if game_mode == :multiplayer || active_player == human_player
+      prompt.select("#{active_player.to_s.capitalize}'s turn", choices, filter: true)
+    else
+      # Computer chooses the best move sorted by precendence
+      move_list.values.first
+    end
   end
 
   def select_replacement_piece_prompt(pawn)
@@ -157,9 +166,15 @@ class ChessGameClient
     self.human_player = prompt.select('Select your pieces', menu_choices[:piece_color_selection])
   end
 
+  def game_mode_selection
+    prompt = TTY::Prompt.new
+    self.game_mode = prompt.select('Game mode selection', menu_choices[:game_mode_selection], filter: true) 
+  end
+
   ######################
 
   def create_new_game
+    game_mode_selection
     piece_color_selection
 
     self.board = Board.new(human_player)
