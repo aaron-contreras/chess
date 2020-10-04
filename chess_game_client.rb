@@ -321,3 +321,4 @@ class ChessGameClient
 end
 
 ChessGameClient.new.run
+
