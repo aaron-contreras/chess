@@ -77,7 +77,6 @@ class CastlingGenerator
     other_pieces.none? { |piece| blocking_positions.include?(piece.position) }
   end
 
-  # TODO: REFACTOR EXTRA CONSTRAINT FOR CASTLING
   def no_enemies_can_move_to_path?(style)
     blocking_positions = blockers(style)
 
