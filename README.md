@@ -20,7 +20,7 @@ My take on this classic, built with Ruby.
   
 ## Demo
 
-[![asciicast](https://asciinema.org/a/do9qdMNKPhFSN5n1VQCBbZ6MS.svg)](https://asciinema.org/a/do9qdMNKPhFSN5n1VQCBbZ6MS)
+![Quick walkthrough](./demos/walkthrough.gif)
 
 ## Thoughts & notes
 
