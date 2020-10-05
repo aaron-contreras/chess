@@ -73,5 +73,3 @@ module GameConstants
   ].freeze
 end
 
-# Alias for module
-GConst = GameConstants

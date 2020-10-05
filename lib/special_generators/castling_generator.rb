@@ -52,11 +52,11 @@ class CastlingGenerator
   end
 
   def short_side_rook
-    other_pieces.find { |piece| castleable_rook?(piece, GConst::SHORT_SIDE_FILE) }
+    other_pieces.find { |piece| castleable_rook?(piece, GameConstants::SHORT_SIDE_FILE) }
   end
 
   def long_side_rook
-    other_pieces.find { |piece| castleable_rook?(piece, GConst::LONG_SIDE_FILE) }
+    other_pieces.find { |piece| castleable_rook?(piece, GameConstants::LONG_SIDE_FILE) }
   end
 
   # Squares that must be empty in order to castle
@@ -67,7 +67,7 @@ class CastlingGenerator
       ranks = [king_rank] * 2
     end
 
-    ranks.zip(GConst::BLOCKER_FILES[style])
+    ranks.zip(GameConstants::BLOCKER_FILES[style])
   end
 
   # No pieces between a king and a given rook

@@ -66,7 +66,7 @@ RSpec.shared_examples 'piece_display' do |piece|
       player = piece.player
       type = piece.class.to_s.to_sym
 
-      unicode_character = GConst::UNICODE_PIECES[player][type]
+      unicode_character = GameConstants::UNICODE_PIECES[player][type]
 
       stringified_piece = piece.to_s
 
