@@ -352,5 +352,6 @@ class ChessGameClient
   end
 end
 
+Paint.mode = 256
 ChessGameClient.new.run
 
