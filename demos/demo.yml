@@ -18,12 +18,12 @@ config:
   # Explicitly set the number of columns
   # or use `auto` to take the current
   # number of columns of your shell
-  cols: 116
+  cols: 100
   
   # Explicitly set the number of rows
   # or use `auto` to take the current
   # number of rows of your shell
-  rows: 37
+  rows: 24
   
   # Amount of times to repeat GIF
   # If value is -1, play once
@@ -42,7 +42,7 @@ config:
   # Maximum delay between frames in ms
   # Ignored if the `frameDelay` isn't set to `auto`
   # Set to `auto` to prevent limiting the max idle time
-  maxIdleTime: 500
+  maxIdleTime: 850
   
   # The surrounding frame box
   # The `type` can be null, window, floating, or solid`
@@ -50,7 +50,7 @@ config:
   # Don't forget to add a backgroundColor style with a null as type
   frameBox:
     type: floating
-    title: TERMINAL CHESS
+    title: Terminalizer
     style:
       border: 0px black solid
       # boxShadow: none
@@ -112,7 +112,7 @@ config:
 # Records, feel free to edit them
 records:
   - delay: 2367
-    content: "Aarons-MacBook-Pro:chess aaroncontreras$ "
+    content: "aaroncontreras$ "
   - delay: 1881
     content: b
   - delay: 137
@@ -506,6 +506,6 @@ records:
   - delay: 2008
     content: "\e[H\e[2J\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h\e[?25h"
   - delay: 5
-    content: 'Aarons-MacBook-Pro:chess aaroncontreras$ '
+    content: 'aaroncontreras$ '
   - delay: 1342
     content: "logout\r\n"
