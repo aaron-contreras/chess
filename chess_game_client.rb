@@ -45,9 +45,16 @@ class ChessGameClient
         'Aged' => :aged,
         'Marble' => :marble,
       },
+      terminal_color_modes: {
+        'True color' => 0xFFFFFF,
+        '256-colors' => 256,
+        '16-colors' => 16,
+        '8-colors' => 8
+      },
       options_menu: {
         'Save progress' => proc { save_prompt },
         'Change board theme' => proc { board_theme_prompt },
+        'Switch terminal color mode' => proc { terminal_colors_prompt },
         'Back to game' => proc { start_game },
         'Back to Main menu' => proc { main_menu_prompt },
         'Quit': proc { close_client }
@@ -127,6 +134,19 @@ class ChessGameClient
     selected_theme = prompt.select('Select a theme', menu_choices[:board_theme_colors], cycle: true, filter: true)
 
     board.change_theme(selected_theme)
+
+    options_menu_prompt
+  end
+
+  def terminal_colors_prompt
+    system 'clear'
+    puts board
+
+    prompt = TTY::Prompt.new
+    puts "If the board is color-less or doesn't look quite right"
+    selected_color_mode = prompt.select('Switch to a compatible color mode', menu_choices[:terminal_color_modes], cycle: true, filter: true)
+
+    Paint.mode = selected_color_mode
 
     options_menu_prompt
   end
@@ -352,6 +372,5 @@ class ChessGameClient
   end
 end
 
-Paint.mode = 256
 ChessGameClient.new.run
 
