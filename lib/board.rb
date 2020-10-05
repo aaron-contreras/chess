@@ -4,11 +4,12 @@ require 'paint'
 
 # Displayable Chess Board
 class Board
-  attr_reader :grid, :bottom_side_player
+  attr_reader :human_player, :theme, :grid
 
-  def initialize(bottom_side_player)
-    @grid = Array.new(8) { Array.new(8) { GameConstants::EMPTY_SQUARE } }
-    @bottom_side_player = bottom_side_player
+  def initialize(human_player, theme = :classic)
+    @human_player = human_player
+    @theme = theme
+    @grid = build_grid
   end
 
   def place(piece)
@@ -23,8 +24,8 @@ class Board
     pieces.each { |piece| place(piece) }
   end
 
-  def hold?(piece)
-    grid.dig(*piece.position).empty? == false
+  def change_theme(theme)
+    @theme = theme
   end
 
   def to_s
@@ -40,7 +41,7 @@ class Board
   # To simulate a more realistic gameplay, you always play on the side closest
   # to the bottom of the screen.
   def rotated_board
-    if bottom_side_player == :white
+    if human_player == :white
       grid.reverse
     else
       grid
@@ -52,7 +53,7 @@ class Board
   end
 
   def clear
-    @grid = Array.new(8) { Array.new(8) { GameConstants::EMPTY_SQUARE } }
+    @grid = build_grid
   end
 
   def equalized_width_squares
@@ -67,18 +68,6 @@ class Board
     end
   end
 
-  def color_squares
-    equalized_width_squares.map.with_index do |row, rank|
-      row_colors = row_colors(rank)
-      padding = format_row(GameConstants::PADDING_ROW, row_colors)
-      main_row = format_row(row, row_colors)
-
-      <<~RANK
-        #{oriented_ranks[rank]} #{main_row}
-      RANK
-    end
-  end
-
   def row_colors(rank)
     if rank.even?
       GameConstants::EVEN_RANK
@@ -87,9 +76,22 @@ class Board
     end
   end
 
+  def color_squares
+    equalized_width_squares.map.with_index do |row, rank|
+      row_colors = row_colors(rank)
+      # Optional padding to make board taller
+      # padding = format_row(GameConstants::PADDING_ROW, row_colors)
+      main_row = format_row(row, row_colors)
+
+      <<~RANK
+        #{oriented_ranks[rank]} #{main_row}
+      RANK
+    end
+  end
+
   def format_row(row, row_colors)
     row.map.with_index do |square, file|
-      square_color = GameConstants::SQUARE_COLOR[row_colors[file]]
+      square_color = GameConstants::BOARD_THEME.dig(theme, row_colors[file])
 
       foreground_color = foreground_color(square)
 
@@ -102,7 +104,7 @@ class Board
   end
 
   def oriented_ranks
-    if bottom_side_player == :white
+    if human_player == :white
       GameConstants::INDEX_TO_RANK.reverse
     else
       GameConstants::INDEX_TO_RANK

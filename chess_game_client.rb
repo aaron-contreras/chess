@@ -40,8 +40,14 @@ class ChessGameClient
         'Load game' => proc { load_game_prompt },
         'Quit' => proc { exit }
       },
+      board_theme_colors: {
+        'Classic' => :classic,
+        'Aged' => :aged,
+        'Marble' => :marble,
+      },
       options_menu: {
         'Save progress' => proc { save_prompt },
+        'Change board theme' => proc { board_theme_prompt },
         'Back to game' => proc { start_game },
         'Back to Main menu' => proc { main_menu_prompt },
         'Quit': proc { close_client }
@@ -78,7 +84,7 @@ class ChessGameClient
     puts figlet['Chess!']
     puts
 
-    prompt.select('Main menu', menu_choices[:main_menu])
+    prompt.select('Main menu', menu_choices[:main_menu], cycle: true, filter: true)
   end
 
   def save_prompt
@@ -101,11 +107,10 @@ class ChessGameClient
 
   def load_game_prompt
     system 'clear'
-    puts 'hello'
 
     prompt = TTY::Prompt.new
 
-    filename = prompt.select('Select a game to load', game_list)
+    filename = prompt.select('Select a game to load', game_list, cycle: true, filter: true)
 
     serialized_string = File.read(filename)
 
@@ -114,13 +119,25 @@ class ChessGameClient
     start_game
   end
 
+  def board_theme_prompt
+    system 'clear'
+    puts board
+
+    prompt = TTY::Prompt.new
+    selected_theme = prompt.select('Select a theme', menu_choices[:board_theme_colors], cycle: true, filter: true)
+
+    board.change_theme(selected_theme)
+
+    options_menu_prompt
+  end
+
   def options_menu_prompt
     system 'clear'
     puts board
 
     prompt = TTY::Prompt.new
 
-    prompt.select('Options menu', menu_choices[:options_menu])
+    prompt.select('Options menu', menu_choices[:options_menu], cycle: true, filter: true)
   end
 
   def in_game_prompt(moves)
@@ -131,7 +148,7 @@ class ChessGameClient
     choices = { 'Options menu' => proc { options_menu_prompt } }.merge(move_list)
 
     if game_mode == :multiplayer || active_player == human_player
-      prompt.select("#{active_player.to_s.capitalize}'s turn", choices, filter: true)
+      prompt.select("#{active_player.to_s.capitalize}'s turn", choices, cycle: true, filter: true)
     else
       # Computer chooses the best move sorted by precendence
       move_list.values.first
@@ -142,7 +159,7 @@ class ChessGameClient
     if active_player == human_player
       prompt = TTY::Prompt.new
       piece_type = prompt.select('What would you like to promote your pawn to?',
-                                 menu_choices[:promotion_piece_list], filter: true)
+                                 menu_choices[:promotion_piece_list], cycle: true, filter: true)
     else
       piece_type = promotion_piece_list.values.sample
     end
@@ -155,10 +172,10 @@ class ChessGameClient
 
     choices = {
       'Main menu' => proc { main_menu_prompt },
-      'Quit' => proc { system 'exit' }
+      'Quit' => proc { close_client }
     }
 
-    prompt.select('Game over', choices, filter: true)
+    prompt.select('Game over', choices, cycle: true, filter: true)
   end
 
   def piece_color_selection
@@ -327,7 +344,7 @@ class ChessGameClient
 
     puts box
 
-    sleep(3)
+    sleep(2)
 
     system 'clear'
 
@@ -335,5 +352,6 @@ class ChessGameClient
   end
 end
 
+Paint.mode = 256
 ChessGameClient.new.run
 

@@ -16,10 +16,19 @@ module GameConstants
     }
   }.freeze
 
-  # Dark brown/khaki
-  SQUARE_COLOR = {
-    dark: '#AC7C5B',
-    light: '#EED3AE'
+  BOARD_THEME = {
+    classic: {
+      dark: '#AC7C5B',
+      light: '#EED3AE'
+    },
+    aged: {
+      dark: '#724211',
+      light: '#E5A853'
+    },
+    marble: {
+      dark: '#5D565A',
+      light: '#BFBBBE'
+    }
   }.freeze
 
   RANKS = 8
