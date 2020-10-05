@@ -4,7 +4,7 @@ require_relative '../lib/board'
 require_relative './shared/among_chess_pieces'
 
 RSpec.describe Board do
-  subject(:board) { described_class.new(:black) }
+  subject(:board) { described_class.new(:black, :brown) }
   include_context 'list_of_pieces'
 
   describe '#place' do
@@ -33,32 +33,10 @@ RSpec.describe Board do
 
         board.update(new_piece_set)
 
-        expect(board.hold?(excluded_piece)).to eq(false)
+        has_piece = board.grid.flatten.include?(excluded_piece)
+
+        expect(has_piece).to eq(false)
       end
     end
   end
-  # Use this to verify printing
-
-  # require_relative '../lib/chess_pieces/rook'
-  # describe '#to_s' do
-  #   it 'prints a nicely formatted board' do
-  #     piece1 = Rook.new(:black, [0, 0])
-  #     piece2 = Rook.new(:white, [1, 0])
-
-  #     squares = [
-  #       8.times.map { piece1 },
-  #       8.times.map { piece1 },
-  #       [piece1, piece2] + 6.times.map { '' },
-  #       8.times.map { '' },
-  #       8.times.map { '' },
-  #       8.times.map { '' },
-  #       8.times.map { piece2 },
-  #       8.times.map { piece2 }
-  #     ]
-
-  #     board.instance_variable_set(:@grid, squares)
-
-  #     puts board.to_s
-  #   end
-  # end
 end
