@@ -32,14 +32,24 @@ class ChessGameClient
     main_menu_prompt
   end
 
+  def toggle_load_option
+    option = { name: 'Load game', value: proc { load_game_prompt } }
+
+    if game_list.empty?
+      option[:disabled] = '(No saved games)'
+    end
+
+    option
+  end
+
   # rubocop: disable Metrics/MethodLength
   def menu_choices
     {
-      main_menu: {
-        'New game' =>  proc { create_new_game },
-        'Load game' => proc { load_game_prompt },
-        'Quit' => proc { exit }
-      },
+      main_menu: [
+        {name: 'New game', value: proc { create_new_game } },
+        {name: 'Quit', value: proc { exit } }
+      ].insert(1, toggle_load_option),
+
       board_theme_colors: {
         'Classic' => :classic,
         'Aged' => :aged,
@@ -117,7 +127,9 @@ class ChessGameClient
 
     prompt = TTY::Prompt.new
 
-    filename = prompt.select('Select a game to load', game_list, cycle: true, filter: true)
+    choices = { 'Back to main menu' => proc { main_menu_prompt } }.merge(game_list)
+
+    filename = prompt.select('Select a game to load', choices, cycle: true, filter: true)
 
     serialized_string = File.read(filename)
 
