@@ -182,8 +182,11 @@ class ChessGameClient
     if game_mode == :multiplayer || active_player == human_player
       prompt.select("#{active_player.to_s.capitalize}'s turn", choices, cycle: true, filter: true)
     else
-      # Computer chooses the best move sorted by precendence
-      move_list.values.first
+      # Computer chooses a random move in the best move category by precedence
+      # The first move always is the most precedent type of move
+      move_list = move_list.values
+      best_move_type = move_list.first[:type]
+      move_list.select { |move| move[:type] == best_move_type }.sample
     end
   end
 
